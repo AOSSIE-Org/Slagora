@@ -29,7 +29,7 @@ import play.api.libs.ws.WSClient
 import play.modules.reactivemongo.ReactiveMongoApi
 import repository.AuthenticatorRepositoryImpl
 import service.{UserService, UserServiceImpl}
-import slack_auth.SlackUserProvider
+import slack_auth.{SlackTeamProvider, SlackUserProvider}
 import utils.auth.{CustomSecuredErrorHandler, CustomUnsecuredErrorHandler, DefaultEnv}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -78,14 +78,17 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     * Provides the social provider registry.
     *
     * @param slackUserProvider The Slack User provider implementation.
+    * @param slackTeamProvider The Slack Team provider implementation.
     * @return The Silhouette environment.
     */
   @Provides
   def provideSocialProviderRegistry(
-                                     slackUserProvider: SlackUserProvider): SocialProviderRegistry = {
+                                     slackUserProvider: SlackUserProvider,
+                                     slackTeamProvider: SlackTeamProvider): SocialProviderRegistry = {
 
     SocialProviderRegistry(Seq(
       slackUserProvider,
+      slackTeamProvider
     ))
   }
 
@@ -297,5 +300,23 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
                                 configuration: Configuration): SlackUserProvider = {
 
     new SlackUserProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.slack_user"))
+  }
+
+
+  /**
+    * Provides the Slack User provider.
+    *
+    * @param httpLayer          The HTTP layer implementation.
+    * @param socialStateHandler The social state handler implementation.
+    * @param configuration      The Play configuration.
+    * @return The SlackUser provider.
+    */
+  @Provides
+  def provideSlackTeamProvider(
+                                httpLayer: HTTPLayer,
+                                socialStateHandler: SocialStateHandler,
+                                configuration: Configuration): SlackTeamProvider = {
+
+    new SlackTeamProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.slack_team"))
   }
 }

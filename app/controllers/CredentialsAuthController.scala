@@ -8,13 +8,13 @@ import com.mohiva.play.silhouette.api.util.{Clock, Credentials, ExtractableReque
 import com.mohiva.play.silhouette.impl.providers._
 import com.mohiva.play.silhouette.impl.providers.oauth2.FacebookProvider
 import io.swagger.annotations.{Api, ApiImplicitParam, ApiImplicitParams, ApiOperation}
-import models.security.SlackUserBuilder
+import models.security.{SlackTeamBuilder, SlackUserBuilder}
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
 import service.UserService
-import slack_auth.SlackUserProvider
+import slack_auth.{SlackTeamProvider, SlackUserProvider}
 import utils.auth.DefaultEnv
 import utils.Logger
 
@@ -40,16 +40,10 @@ class CredentialsAuthController @Inject()(components: ControllerComponents,
     * @return The result to send.
     */
   def authenticate(provider: String) = Action.async { implicit request: Request[AnyContent] =>
-      logger.error(provider.toString)
     (socialProviderRegistry.get[SocialProvider](provider) match {
-      case Some(p: SocialProvider with SlackUserBuilder) =>
+      case Some(p: SocialProvider) =>
         p.authenticate().flatMap {
           case Left(result) => Future.successful(result)
-          case Right(authInfo) => for {
-            profile <- p.retrieveProfile(authInfo)
-          } yield {
-            Ok(Json.toJson(profile))
-          }
         }
       case _ => Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))
     }).recover {
@@ -58,13 +52,29 @@ class CredentialsAuthController @Inject()(components: ControllerComponents,
   }
 
   /**
-    * Completes the authentication on slack URL redirect
+    * Completes the authentication for users on slack URL redirect
     * @return The result to send.
    */
 
   def authenticateUser() = Action.async { implicit request: Request[AnyContent] =>
     ( (socialProviderRegistry.get[SocialProvider]("slack_user"), request.getQueryString("code")) match {
       case ( Some(p: SlackUserProvider), Some(code: String) ) =>
+        p.buildProfileFromAccessCode(code).flatMap{
+          profile => Future.successful(Ok(Json.toJson(profile)))
+        }
+    }).recover {
+      case e: ProviderException => InternalServerError("Server Error")
+    }
+  }
+
+  /**
+    * Completes the authentication for teams on slack URL redirect
+    * @return The result to send.
+    */
+
+  def authenticateTeam() = Action.async { implicit request: Request[AnyContent] =>
+    ( (socialProviderRegistry.get[SocialProvider]("slack_team"), request.getQueryString("code")) match {
+      case ( Some(p: SlackTeamProvider), Some(code: String) ) =>
         p.buildProfileFromAccessCode(code).flatMap{
           profile => Future.successful(Ok(Json.toJson(profile)))
         }
