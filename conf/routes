@@ -10,8 +10,9 @@ GET         /docs                                                           cont
 GET         /                                                               controllers.ApplicationController.index
 GET         /badPassword                                                    controllers.ApplicationController.badPassword
 GET         /colors                                                         controllers.ApplicationController.colors
+GET         /authenticate/:provider                                         controllers.CredentialsAuthController.authenticate(provider)
+GET         /authenticate-user                                              controllers.CredentialsAuthController.authenticateUser
 
-POST        /api/auth/signin/credentials                                    controllers.CredentialsAuthController.authenticate
 POST        /api/auth/signup                                                controllers.SignUpController.signUp
 
 # Map static resources from the /public folder to the /assets URL path

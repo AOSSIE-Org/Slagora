@@ -1,22 +1,22 @@
 package controllers
 
 import javax.inject.Inject
-
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
-import com.mohiva.play.silhouette.api.util.{Clock, Credentials, PasswordHasherRegistry}
-import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
+import com.mohiva.play.silhouette.api.util.{Clock, Credentials, ExtractableRequest, PasswordHasherRegistry}
 import com.mohiva.play.silhouette.impl.providers._
-import formatters.json.{CredentialFormat, Token}
+import com.mohiva.play.silhouette.impl.providers.oauth2.FacebookProvider
 import io.swagger.annotations.{Api, ApiImplicitParam, ApiImplicitParams, ApiOperation}
-import models.security.SignUp
+import models.security.SlackUserBuilder
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{AbstractController, ControllerComponents}
+import play.api.mvc.{AbstractController, AnyContent, ControllerComponents, Request}
 import service.UserService
+import slack_auth.SlackUserProvider
 import utils.auth.DefaultEnv
+import utils.Logger
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -29,66 +29,47 @@ class CredentialsAuthController @Inject()(components: ControllerComponents,
                                           credentialsProvider: CredentialsProvider,
                                           authInfoRepository: AuthInfoRepository,
                                           passwordHasherRegistry: PasswordHasherRegistry,
-                                          messagesApi: MessagesApi)
-                                         (implicit ex: ExecutionContext) extends AbstractController(components) with I18nSupport {
+                                          messagesApi: MessagesApi,
+                                          socialProviderRegistry: SocialProviderRegistry)
+                                         (implicit ex: ExecutionContext) extends AbstractController(components) with I18nSupport with Logger {
 
-  implicit val credentialFormat = CredentialFormat.restFormat
-
-  implicit val signUpFormat = Json.format[SignUp]
-
-  @ApiOperation(value = "Get authentication token", response = classOf[Token])
-  @ApiImplicitParams(
-    Array(
-      new ApiImplicitParam(
-        value = "Credentials",
-        required = true,
-        dataType = "com.mohiva.play.silhouette.api.util.Credentials",
-        paramType = "body"
-      )
-    )
-  )
-  def authenticate = Action.async(parse.json[Credentials]) { implicit request =>
-    val credentials =
-      Credentials(request.body.identifier, request.body.password)
-    credentialsProvider
-      .authenticate(credentials)
-      .flatMap { loginInfo =>
-        userService.retrieve(loginInfo).flatMap {
-          case Some(user) if !user.activated =>
-            Future.failed(new IdentityNotFoundException("Couldn't find user"))
-          case Some(user) =>
-            val config = configuration.underlying
-            silhouette.env.authenticatorService
-              .create(loginInfo)
-              .map {
-                case authenticator => authenticator
-              }
-              .flatMap { authenticator =>
-                silhouette.env.eventBus.publish(LoginEvent(user, request))
-                silhouette.env.authenticatorService
-                  .init(authenticator)
-                  .flatMap { token =>
-                    silhouette.env.authenticatorService
-                      .embed(
-                        token,
-                        Ok(
-                          Json.toJson(
-                            Token(
-                              token,
-                              expiresOn = authenticator.expirationDateTime
-                            )
-                          )
-                        )
-                      )
-                  }
-              }
-          case None =>
-            Future.failed(new IdentityNotFoundException("Couldn't find user"))
+  /**
+    * Begins the authentication flow a user against a social provider.
+    *
+    * @param provider The ID of the provider to authenticate against.
+    * @return The result to send.
+    */
+  def authenticate(provider: String) = Action.async { implicit request: Request[AnyContent] =>
+      logger.error(provider.toString)
+    (socialProviderRegistry.get[SocialProvider](provider) match {
+      case Some(p: SocialProvider with SlackUserBuilder) =>
+        p.authenticate().flatMap {
+          case Left(result) => Future.successful(result)
+          case Right(authInfo) => for {
+            profile <- p.retrieveProfile(authInfo)
+          } yield {
+            Ok(Json.toJson(profile))
+          }
         }
-      }
-      .recover {
-        case _: ProviderException =>
-          Forbidden
-      }
+      case _ => Future.failed(new ProviderException(s"Cannot authenticate with unexpected social provider $provider"))
+    }).recover {
+      case e: ProviderException => InternalServerError("Server Error")
+    }
+  }
+
+  /**
+    * Completes the authentication on slack URL redirect
+    * @return The result to send.
+   */
+
+  def authenticateUser() = Action.async { implicit request: Request[AnyContent] =>
+    ( (socialProviderRegistry.get[SocialProvider]("slack_user"), request.getQueryString("code")) match {
+      case ( Some(p: SlackUserProvider), Some(code: String) ) =>
+        p.buildProfileFromAccessCode(code).flatMap{
+          profile => Future.successful(Ok(Json.toJson(profile)))
+        }
+    }).recover {
+      case e: ProviderException => InternalServerError("Server Error")
+    }
   }
 }
