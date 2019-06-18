@@ -1,8 +1,8 @@
-name := "play-silhouette-rest-mongo"
+name := "slagora"
  
 version := "1.0" 
 
-lazy val `play-silhouette-rest-mongo` = (project in file(".")).enablePlugins(PlayScala)
+lazy val `slagora` = (project in file(".")).enablePlugins(PlayScala)
 scalacOptions ++= Seq("-deprecation", "-language:_")
 
 scalaVersion := "2.12.6"
