@@ -1,6 +1,7 @@
 logs
 project/project
 project/target
+conf/silhouette-local.conf
 target
 tmp
 .history
