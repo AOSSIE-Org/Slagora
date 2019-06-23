@@ -14,7 +14,5 @@ GET         /authenticate/:provider                                         cont
 GET         /authenticate-user                                              controllers.CredentialsAuthController.authenticateUser
 GET         /authenticate-team                                              controllers.CredentialsAuthController.authenticateTeam
 
-POST        /api/auth/signup                                                controllers.SignUpController.signUp
-
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                                   controllers.Assets.versioned(path="/public", file: Asset)
