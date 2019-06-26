@@ -80,7 +80,7 @@ class SlackUserProfileParser extends SocialProfileParser[JsValue, SlackUser, OAu
     val teamName = (json \ "team" \ "name").as[String]
 
     SlackUser(
-      loginInfo = LoginInfo(ID, s"user_id=${id}&team_id=${teamId}"),
+      loginInfo = SlackUser.buildLoginInfo(id, teamId),
       id = id,
       name = name,
       email = email,

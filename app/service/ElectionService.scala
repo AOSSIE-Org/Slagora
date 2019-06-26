@@ -36,7 +36,7 @@ trait ElectionService {
 
   def getEndDate(id: String): Future[DateTime]
 
-  def getBallotVisibility(id : String) : Future[Option[String]]
+  def getBallotVisibility(id : String) : Future[Option[Boolean]]
 
   def update(election : Election) : Future[Boolean]
 

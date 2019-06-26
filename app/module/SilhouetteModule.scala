@@ -27,6 +27,7 @@ import play.api.libs.ws.WSClient
 import play.modules.reactivemongo.ReactiveMongoApi
 import repository.AuthenticatorRepositoryImpl
 import service.{TeamService, UserService}
+import slack_api.SlackSettings
 import slack_auth.{SlackTeamProvider, SlackUserProvider}
 import utils.auth.{CustomSecuredErrorHandler, CustomUnsecuredErrorHandler, DefaultEnv}
 
@@ -314,7 +315,11 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
                                 httpLayer: HTTPLayer,
                                 socialStateHandler: SocialStateHandler,
                                 configuration: Configuration): SlackTeamProvider = {
-
     new SlackTeamProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.slack_team"))
+  }
+
+  @Provides
+  def provideSlackAPISettings(configuration: Configuration): SlackSettings = {
+    configuration.underlying.as[SlackSettings]("slack.api")
   }
 }

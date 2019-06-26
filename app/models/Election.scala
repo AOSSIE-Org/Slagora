@@ -39,8 +39,7 @@ case class Election(
                      realtimeResult: Boolean,
                      votingAlgo: String,
                      candidates: List[String],
-                     ballotVisibility: String,
-                     voterListVisibility: Boolean,
+                     ballotVisibility: Boolean,
                      createdTime: DateTime,
                      ballot: List[Ballot],
                      voterList: List[Voter],
@@ -73,7 +72,6 @@ object Election {
             "votingAlgo" -> election.votingAlgo,
             "candidates" -> election.candidates,
             "ballotVisibility" -> election.ballotVisibility,
-            "voterListVisibility" -> election.voterListVisibility,
             "createdTime" -> election.createdTime,
             "ballot" -> election.ballot,
             "voterList" -> election.voterList,
@@ -97,7 +95,6 @@ object Election {
             "votingAlgo" -> election.votingAlgo,
             "candidates" -> election.candidates,
             "ballotVisibility" -> election.ballotVisibility,
-            "voterListVisibility" -> election.voterListVisibility,
             "createdTime" -> election.createdTime,
             "ballot" -> election.ballot,
             "voterList" -> election.voterList,
@@ -116,7 +113,6 @@ object Election {
             "votingAlgo" -> election.votingAlgo,
             "candidates" -> election.candidates,
             "ballotVisibility" -> election.ballotVisibility,
-            "voterListVisibility" -> election.voterListVisibility,
             "createdTime" -> election.createdTime,
             "ballot" -> election.ballot,
             "voterList" -> election.voterList,
@@ -139,7 +135,6 @@ object Election {
             "votingAlgo" -> election.votingAlgo,
             "candidates" -> election.candidates,
             "ballotVisibility" -> election.ballotVisibility,
-            "voterListVisibility" -> election.voterListVisibility,
             "createdTime" -> election.createdTime,
             "ballot" -> election.ballot,
             "voterList" -> election.voterList,
@@ -165,8 +160,7 @@ object Election {
           val realtimeResult = (election \ "realtimeResult").as[Boolean]
           val votingAlgo = (election \ "votingAlgo").as[String]
           val candidates = (election \ "candidates").as[List[String]]
-          val ballotVisibility = (election \ "ballotVisibility").as[String]
-          val voterListVisibility = (election \ "voterListVisibility").as[Boolean]
+          val ballotVisibility = (election \ "ballotVisibility").as[Boolean]
           val createdTime = (election \ "createdTime").as[DateTime]
           val ballot = (election \ "ballot").as[List[Ballot]]
           val voterList = (election \ "voterList").as[List[Voter]]
@@ -187,7 +181,6 @@ object Election {
               votingAlgo,
               candidates,
               ballotVisibility,
-              voterListVisibility,
               createdTime,
               ballot,
               voterList,

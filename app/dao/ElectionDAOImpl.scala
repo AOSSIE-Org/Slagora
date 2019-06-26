@@ -157,7 +157,7 @@ class ElectionDAOImpl @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit
     }
   }
 
-  override def getBallotVisibility(id: String): Future[Option[String]] = {
+  override def getBallotVisibility(id: String): Future[Option[Boolean]] = {
     get(id).flatMap {
       case Some(result) => Future.successful(Some(result.ballotVisibility))
       case _ => Future.successful(None)
