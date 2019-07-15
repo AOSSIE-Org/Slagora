@@ -1,9 +1,10 @@
 package models.security
 
-import com.mohiva.play.silhouette.api.LoginInfo
+import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
 import com.mohiva.play.silhouette.impl.providers.{SocialProfile, SocialProfileBuilder}
 import play.api.libs.json
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
+import slack_auth.SlackUserProvider.ID
 
 case class SlackUser(
                       loginInfo: LoginInfo,
@@ -17,10 +18,13 @@ case class SlackUser(
                       image_192: String,
                       image_512: String,
                       team: Team
-                    ) extends SocialProfile
+                    ) extends SocialProfile with Identity
 
 object SlackUser {
-  implicit val slackUserFormat: json.Format[SlackUser] = Json.format[SlackUser]
+  implicit val slackUserJsonFormat: json.Format[SlackUser] = Json.format[SlackUser]
+  implicit val slackUserObjectFormat: OFormat[SlackUser] = Json.format[SlackUser]
+
+  def buildLoginInfo(userId: String, teamId: String): LoginInfo = LoginInfo(ID, s"user_id=${userId}&team_id=${teamId}")
 }
 
 trait SlackUserBuilder {

@@ -72,7 +72,7 @@ class SlackTeamProfileParser extends SocialProfileParser[JsValue, SlackTeam, Sla
     //We just need to extract the required information from this authInfo
     //See https://api.slack.com/docs/slack-button
     SlackTeam(
-      LoginInfo(ID, s"team_id=${authInfo.team_id}"),
+      SlackTeam.buildLoginInfo(authInfo.team_id),
       accessToken = authInfo.access_token,
       scope = authInfo.scope,
       name = authInfo.team_name,

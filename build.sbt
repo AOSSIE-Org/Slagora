@@ -5,7 +5,7 @@ version := "1.0"
 lazy val `slagora` = (project in file(".")).enablePlugins(PlayScala)
 scalacOptions ++= Seq("-deprecation", "-language:_")
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.3"
 val reactiveMongoVersion = "0.13.0-play26"
 val silhouetteVersion = "5.0.3"
 val playMailerVersion = "6.0.1"
@@ -22,9 +22,12 @@ libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.4.3",
   "com.typesafe.play" %% "play-mailer" % playMailerVersion,
   "com.typesafe.play" %% "play-mailer-guice" % playMailerVersion,
+  "com.enragedginger" %% "akka-quartz-scheduler" % "1.6.1-akka-2.5.x",
   "net.codingwell" %% "scala-guice" % "4.1.1",
   "com.adrianhurt" %% "play-bootstrap" % "1.2-P26-B3",
   "com.typesafe.play" %% "play-json" % playJsonVersion,
+  "org.typelevel" %% "spire" % "0.14.1",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
   "com.typesafe.play" %% "play-json-joda" % playJsonVersion,
   "io.swagger" %% "swagger-play2" % "1.6.1-SNAPSHOT",
   "org.webjars" % "swagger-ui" % swaggerUIVersion,
