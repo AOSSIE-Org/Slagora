@@ -1,0 +1,88 @@
+@(id: String, name: String, start: org.joda.time.DateTime, end: org.joda.time.DateTime, algorithm: String, description: String, user: String, channel: String)
+{
+    "channel": "@channel",
+    "text": "New election",
+    "attachments": [],
+    "blocks": [
+              	{
+              		"type": "section",
+              		"text": {
+              			"type": "plain_text",
+              			"emoji": true,
+              			"text": "Hello someone has submitted a new election for this channel. Check it out"
+              		}
+              	},
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": "*Author:* @user\nBelow you can find information about the election."
+              			}
+              		]
+              	},
+              	{
+              		"type": "divider"
+              	},
+              	{
+              		"type": "section",
+              		"text": {
+              			"type": "mrkdwn",
+              			"text": "*Election name:*  @name\n*Algorithm:*         @algorithm\n*Start date:*          @start.toString("yyyy-MM-dd HH:mm:ss") UTC\n*End date:*           @end.toString("yyyy-MM-dd HH:mm:ss") UTC"
+              		},
+              		"accessory": {
+              			"type": "image",
+              			"image_url": "https://api.slack.com/img/blocks/bkb_template_images/notifications.png",
+              			"alt_text": "calendar thumbnail"
+              		}
+              	},
+              	{
+              		"type": "divider"
+              	},
+              	{
+              		"type": "section",
+              		"text": {
+              			"type": "mrkdwn",
+              			"text": "*Description:*"
+              		}
+              	},
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": "@description"
+              			}
+              		]
+              	},
+              	{
+              		"type": "divider"
+              	},
+                {
+                	"type": "actions",
+                        "elements": [
+                            {
+                                "type": "button",
+                                "action_id": "@id:tryVoting",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Cast Your Vote",
+                                    "emoji": true
+                                },
+                                "value": "Try Voting"
+                            },
+                            {
+                                "type": "button",
+                                "action_id": "@id:result",
+                                "style": "primary",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": ":tada: View Result",
+                                    "emoji": true
+                                },
+                                "value": "click_me"
+                            }
+                        ]
+                    }
+              ]
+}

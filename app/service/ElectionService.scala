@@ -1,7 +1,7 @@
 package service
 
 import com.mohiva.play.silhouette.api.LoginInfo
-import models.{Ballot, Election, Voter, Winner}
+import models._
 import org.joda.time.DateTime
 
 import scala.concurrent.Future
