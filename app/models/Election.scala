@@ -5,7 +5,9 @@ import java.util.Date
 
 import play.api.libs.json._
 import com.mohiva.play.silhouette.api.LoginInfo
-import org.joda.time.DateTime
+import models.security.SlackUser
+import models.slack_api.payloads.SimpleActionPayload
+import org.joda.time.{DateTime, DateTimeZone, LocalDate}
 
 import scala.util.{Failure, Success, Try}
 
@@ -47,7 +49,11 @@ case class Election(
                      isCounted: Boolean,
                      noVacancies: Int,
                      loginInfo: Option[LoginInfo]
-                   )
+                   ) {
+  def hasVoted(voterId: LoginInfo): Boolean = {
+    ballot.exists(b => b.voterId.providerKey == voterId.providerKey)
+  }
+}
 
 object Election {
 
@@ -62,7 +68,8 @@ object Election {
       (election.id, election.loginInfo) match {
         case (Some(id), Some(loginInfo)) =>
           Json.obj(
-            "_id" -> id,
+            "_id" -> Json.obj(
+              "$oid" -> id),
             "name" -> election.name,
             "description" -> election.description,
             "creatorName" -> election.creatorName,
@@ -85,7 +92,8 @@ object Election {
           )
         case (Some(id), None) =>
           Json.obj(
-            "_id" -> id,
+            "_id" -> Json.obj(
+              "$oid" -> id),
             "name" -> election.name,
             "description" -> election.description,
             "creatorName" -> election.creatorName,
@@ -198,4 +206,55 @@ object Election {
     }
   }
 
+  def buildFromPartialElection(partialElection: PartialElection, payload: SimpleActionPayload): Option[Election] = {
+    if( isDatesValid(partialElection.start, partialElection.end) ) {
+      val regex = "\\s++$"
+      val candidatesList = for (candidate <- partialElection.candidates) yield {
+        //Remove leading and trailing white spaces
+        candidate.replaceFirst(regex, "").reverse.replaceFirst(regex, "").reverse
+      }
+      val now  = LocalDate.now(DateTimeZone.UTC)
+      //Set end time to end of the day
+      val endDate = DateTime.parse(s"${partialElection.end}T23:59:59Z")
+      var startDate = DateTime.now(DateTimeZone.UTC)
+      if(DateTime.parse(partialElection.start).isAfter(DateTime.parse(LocalDate.now().toString("yyyy-MM-dd")))) {
+        //Set start time to midnight
+        startDate = DateTime.parse(s"${partialElection.start}T00:00:00Z")
+      } else {
+        startDate = now.toDateTimeAtCurrentTime.toDateTime(DateTimeZone.UTC)
+      }
+      Some(Election(
+        None,
+        name = partialElection.name,
+        description = partialElection.description,
+        creatorName = payload.user.name,
+        start = startDate,
+        end = endDate,
+        realtimeResult = partialElection.isRealtime,
+        votingAlgo = partialElection.algorithm,
+        candidates = candidatesList,
+        ballotVisibility = partialElection.ballotVisibility,
+        createdTime = now.toDateTimeAtCurrentTime.toDateTime(DateTimeZone.UTC),
+        ballot = List.empty[Ballot],
+        voterList = List.empty[Voter],
+        winners = List.empty[Winner],
+        isCounted = false,
+        noVacancies = partialElection.noSeats,
+        loginInfo = Some(SlackUser.buildLoginInfo(payload.user.id,payload.team.id))
+      ))
+    } else {
+      None
+    }
+  }
+
+  private def isDatesValid(start: String, end: String): Boolean = {
+    val startDate = DateTime.parse(start)
+    val endDate = DateTime.parse(end)
+    val now = DateTime.parse(LocalDate.now().toString("yyyy-MM-dd"))
+    if((startDate.isEqual(now) || startDate.isAfter(now)) && (startDate.isBefore(endDate) || startDate.isEqual(now)) ) {
+      true
+    } else {
+      false
+    }
+  }
 }

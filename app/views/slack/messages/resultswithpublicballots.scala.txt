@@ -1,0 +1,60 @@
+@(channel: String, user: String, name: String, start: String, end: String, algorithm: String, ballotsString: String, winners: String)
+
+{
+    "channel": "@channel",
+    "user": "@user",
+    "text": ":tada: Results for @name are available",
+    "attachments": [],
+    "blocks": [
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": ":tada: Results are available. Below are some details of the election.\n\n:ballot_box_with_check: *Election:* @name\n\n:alarm_clock: *Start Time:* @start UTC\n\n:alarm_clock: *End Time:* @end UTC\n\n:hourglass_flowing_sand: *Counting method:* @algorithm"
+              			}
+              		]
+              	},
+              	@ballotsString
+              	{
+              		"type": "divider"
+              	},
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": ":trophy: *Winner(s):* @winners"
+              			}
+              		]
+              	},
+              	{
+              		"type": "divider"
+              	},
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": "Use the *delete* button below to delete this message. This is visible only to you."
+              			}
+              		]
+              	},
+              	{
+              		"type": "actions",
+              		"elements": [
+              			{
+              				"type": "button",
+              				"action_id": "nothing:delete",
+              				"style": "danger",
+              				"text": {
+              					"type": "plain_text",
+              					"text": ":do_not_litter: Delete",
+              					"emoji": true
+              				},
+              				"value": "click_me_123"
+              			}
+              		]
+              	}
+              ]
+}

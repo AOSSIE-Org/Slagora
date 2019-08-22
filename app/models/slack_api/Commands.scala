@@ -3,8 +3,9 @@ package models.slack_api
 // This object holds all slash commands name supported by Slagora
 object Commands extends Enumeration {
 
-  type Commands = Value
+  type Commands = String
 
-  val SLAGORA = Value("Slagora")
+  val HELP = "help"
+  val CREATE = "create"
 
 }

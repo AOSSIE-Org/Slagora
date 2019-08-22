@@ -18,6 +18,8 @@ class BaseModule extends AbstractModule with ScalaModule {
    */
   def configure(): Unit = {
     bind[ElectionService].to[ElectionDAOImpl]
+    bind[PartialElectionService].to[PartialElectionDAOImpl]
+    bind[BallotDataService].to[BallotDataDAOImpl]
     bind[SlackAPIService].to[SlackAPIProvider]
   }
 }

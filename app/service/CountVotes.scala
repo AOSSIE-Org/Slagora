@@ -20,7 +20,7 @@ object CountVotes {
   def parsePreferenceBallot(ballot: Ballot): List[Candidate] = {
     //Expecting ballots of type candidateA>candidateB>candidateC
     var candidatesList = ListBuffer[Candidate]()
-    val ballotToList = ballot.voteBallot.split(",|>")
+    val ballotToList = ballot.ballotData.split(",|>")
     for (candidate <- ballotToList) {
       candidatesList += Candidate(candidate)
     }
@@ -30,7 +30,7 @@ object CountVotes {
   def parseScoreBallot(ballot: Ballot): List[(Candidate, Rational)] = {
     //Expecting ballots of type (A:20/100)(B:50/100)(C:2/100)
     val candidatesList = ListBuffer[(Candidate, Rational)]()
-    val ballotToList = ballot.voteBallot.split("[)]")
+    val ballotToList = ballot.ballotData.split("[)]")
     for (value <- ballotToList) {
       val split = value.replaceFirst("[(]","").split(":")
       val candidate = split(0)
@@ -44,7 +44,7 @@ object CountVotes {
   def parseRankBallot(ballot: Ballot): List[(Candidate, Int)] = {
     //Expecting ballots of type (A:20)(B:500)(C:10)
     val candidatesList = ListBuffer[(Candidate, Int)]()
-    val ballotToList = ballot.voteBallot.split("[)]")
+    val ballotToList = ballot.ballotData.split("[)]")
     for (value <- ballotToList) {
       val split = value.replaceFirst("[(]","").split(":")
       val candidate = split(0)

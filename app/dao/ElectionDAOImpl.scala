@@ -3,12 +3,13 @@ package dao
 import com.mohiva.play.silhouette.api.LoginInfo
 import javax.inject.Inject
 import models.Election._
-import models.{Ballot, Election, Voter, Winner}
+import models._
 import org.joda.time.DateTime
 import play.api.libs.json._
 import play.modules.reactivemongo._
 import reactivemongo.api.ReadPreference
 import play.modules.reactivemongo.json._
+import reactivemongo.bson.BSONObjectID
 import reactivemongo.play.json.collection.JSONCollection
 import service.ElectionService
 
@@ -28,8 +29,9 @@ class ElectionDAOImpl @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit
     * @return The saved Election.
     */
   override def save(election: Election): Future[Election] = {
-    electionsCollection.flatMap(_.insert(election)).flatMap {
-      _ => Future.successful(election)
+    val e = election.copy(id = Some(BSONObjectID.generate().stringify))
+    electionsCollection.flatMap(_.insert(e)).flatMap {
+      _ => Future.successful(e)
     }
   }
 

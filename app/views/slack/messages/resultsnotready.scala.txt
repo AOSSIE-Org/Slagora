@@ -1,0 +1,58 @@
+@(id: String, name: String, time: String)
+
+{
+    "response_type": "ephemeral",
+    "delete_original": "true",
+    "text": ":tada: Results not yet available",
+    "attachments": [],
+    "blocks": [
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": "The Results for this election are not available in realtime. They will be published at the end of the election.\n:ballot_box_with_check: *Election:* @name\n:alarm_clock: *End Time:* @time UTC"
+              			}
+              		]
+              	},
+              	{
+              		"type": "divider"
+              	},
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": "Use the button below to delete this message. This is visible only to you."
+              			}
+              		]
+              	},
+              	{
+              		"type": "actions",
+              		"elements": [
+              			{
+              				"type": "button",
+              				"action_id": "@id:result",
+              				"style": "primary",
+              				"text": {
+              					"type": "plain_text",
+              					"text": ":tada: View Result",
+              					"emoji": true
+              				},
+              				"value": "click_me_123"
+              			},
+                          {
+              				"type": "button",
+              				"action_id": "delete",
+              				"style": "danger",
+              				"text": {
+              					"type": "plain_text",
+              					"text": ":do_not_litter: Delete",
+              					"emoji": true
+              				},
+              				"value": "click_me_123"
+              			}
+              		]
+              	}
+              ]
+}

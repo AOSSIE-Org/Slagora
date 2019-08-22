@@ -1,0 +1,76 @@
+@(channel: String, user: String)
+{
+    "channel": "@channel",
+    "user": "@user",
+    "text": "Sign Up to the Slagora application",
+    "attachments": [],
+    "blocks": [
+              	{
+              		"type": "section",
+              		"text": {
+              			"type": "plain_text",
+              			"emoji": true,
+              			"text": ":bangbang:Oops  looks like you are not a registered user."
+              		}
+              	},
+              	{
+              		"type": "divider"
+              	},
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": "Sign up so you can have access to all the features provided by *Slagora*."
+              			}
+              		]
+              	},
+              	{
+              		"type": "section",
+              		"text": {
+              			"type": "mrkdwn",
+              			"text": "Sign Up and continue from where you left."
+              		},
+              		"accessory": {
+              			"type": "button",
+                          "url": "https://b4f25e81.ngrok.io/authenticate/slack_user",
+                          "action_id": "blabla:signup",
+                          "style": "primary",
+              			"text": {
+              				"type": "plain_text",
+              				"text": ":key: Sign Up",
+              				"emoji": true
+              			},
+              			"value": "signup"
+              		}
+              	},
+              	{
+                    "type": "divider"
+                },
+                {
+                    "type": "context",
+                    "elements": [
+                        {
+                            "type": "mrkdwn",
+                            "text": "Use the button below to delete this message. This is visible only to you."
+                        }
+                    ]
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "button",
+                              "action_id": "nothing:delete",
+                              "style": "danger",
+                            "text": {
+                                "type": "plain_text",
+                                "text": ":do_not_litter: Delete",
+                                "emoji": true
+                            },
+                            "value": "click_me_123"
+                        }
+                    ]
+                }
+              ]
+}
