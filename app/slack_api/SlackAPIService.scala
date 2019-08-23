@@ -22,4 +22,6 @@ trait SlackAPIService {
   def sendVotedAlreadyMsg(election: Election, simpleActionPayload: SimpleActionPayload, team: SlackTeam): Future[JsValue]
   def sendResultsNotAvailableMsg(election: Election, response_url: String, team: SlackTeam): Future[JsValue]
   def sendResultsMsg(election: Election, team: SlackTeam, simpleActionPayload: SimpleActionPayload): Future[JsValue]
+  def sendResultsMsg(election: Election, team: SlackTeam): Future[JsValue]
+
 }

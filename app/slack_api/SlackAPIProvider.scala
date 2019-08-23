@@ -273,4 +273,97 @@ class SlackAPIProvider @Inject()(
         Future.successful(response.json)
       }
   }
+
+  override def sendResultsMsg(election: Election, team: SlackTeam): Future[JsValue] = {
+    def createCandidateVotersString(candidate: String, ballots: List[Ballot]): String = {
+      var string =
+        s"""{
+           |		"type": "context",
+           |		"elements": [
+           |			{
+           |				"type": "mrkdwn",
+           |				"text": "*Candidate:* $candidate"
+           |			}
+           |		]
+           |},
+           |{
+           |		"type": "context",
+           |		"elements": [
+        """.stripMargin
+
+      if(ballots.isEmpty) {
+        string = string +
+          """{
+            |				"type": "plain_text",
+            |				"emoji": true,
+            |				"text": "No votes"
+            |			}
+            |   ]
+            |	},
+          """.stripMargin
+      } else {
+        for (ballot <- ballots) {
+          if (ballot != ballots.last) {
+
+            string = string +
+              s"""{
+                 |				"type": "image",
+                 |				"image_url": "${ballot.voterImage}",
+                 |				"alt_text": "@${ballot.voterName}"
+                 |			},
+                  """.stripMargin
+          } else {
+            string = string +
+              s"""{
+                 |				"type": "image",
+                 |				"image_url": "${ballot.voterImage}",
+                 |				"alt_text": "@${ballot.voterName}"
+                 |			},
+                 |			{
+                 |				"type": "plain_text",
+                 |				"emoji": true,
+                 |				"text": "${ballots.size} votes"
+                 |			}
+                 |   ]
+                 |	},
+                  """.stripMargin
+          }
+        }
+      }
+      string
+    }
+
+    def formatWinners(winners: List[(Candidate, Rational)]): String = {
+      if (winners.isEmpty) {
+        "No winner(s)"
+      } else {
+        var winnersString = winners.head._1.name
+        for (winner <- winners.tail) {
+          winnersString = winnersString + s", ${winner._1.name}"
+        }
+        winnersString
+      }
+    }
+
+    val winners = CountVotes.countVotesMethod(election.ballot, election.votingAlgo, election.candidates, election.noVacancies)
+    var s = ""
+    for (candidate <- election.candidates) {
+      val bs = election.ballot.filter(b => b.ballotData.equalsIgnoreCase(candidate))
+      logger.error(s"\nBallots $bs")
+      s = s +
+        s"""{
+           |		"type": "divider"
+           |	},
+          """.stripMargin + createCandidateVotersString(candidate, bs)
+    }
+
+    val http = httpLayer.url(slackAPISettings.baseUrl.concat(slackAPISettings.sendMsg))
+      .addHttpHeaders(
+        "Content-type" -> "application/json",
+        "Authorization" -> s"Bearer ${team.bot.bot_access_token}")
+    http.post(Json.parse(views.txt.slack.messages.resultswithpublicballotsforteam(election.channelId, election.name, election.start.toString("yyyy-MM-dd HH:mm:ss"), election.end.toString("yyyy-MM-dd HH:mm:ss"), election.votingAlgo, s, formatWinners(winners)).body))
+      .flatMap { response =>
+        Future.successful(response.json)
+      }
+  }
 }

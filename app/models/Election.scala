@@ -36,6 +36,7 @@ case class Election(
                      name: String,
                      description: String,
                      creatorName: String,
+                     channelId: String,
                      start: DateTime,
                      end: DateTime,
                      realtimeResult: Boolean,
@@ -73,6 +74,7 @@ object Election {
             "name" -> election.name,
             "description" -> election.description,
             "creatorName" -> election.creatorName,
+            "channelId" -> election.channelId,
             "start" -> election.start,
             "end" -> election.end,
             "realtimeResult" -> election.realtimeResult,
@@ -97,6 +99,7 @@ object Election {
             "name" -> election.name,
             "description" -> election.description,
             "creatorName" -> election.creatorName,
+            "channelId" -> election.channelId,
             "start" -> election.start,
             "end" -> election.end,
             "realtimeResult" -> election.realtimeResult,
@@ -115,6 +118,7 @@ object Election {
             "name" -> election.name,
             "description" -> election.description,
             "creatorName" -> election.creatorName,
+            "channelId" -> election.channelId,
             "start" -> election.start,
             "end" -> election.end,
             "realtimeResult" -> election.realtimeResult,
@@ -137,6 +141,7 @@ object Election {
             "name" -> election.name,
             "description" -> election.description,
             "creatorName" -> election.creatorName,
+            "channelId" -> election.channelId,
             "start" -> election.start,
             "end" -> election.end,
             "realtimeResult" -> election.realtimeResult,
@@ -163,6 +168,7 @@ object Election {
           val name = (election \ "name").as[String]
           val description = (election \ "description").as[String]
           val creatorName = (election \ "creatorName").as[String]
+          val channelId = (election \ "channelId").as[String]
           val start = (election \ "start").as[DateTime]
           val end = (election \ "end").as[DateTime]
           val realtimeResult = (election \ "realtimeResult").as[Boolean]
@@ -183,6 +189,7 @@ object Election {
               name,
               description,
               creatorName,
+              channelId,
               start,
               end,
               realtimeResult,
@@ -228,6 +235,7 @@ object Election {
         name = partialElection.name,
         description = partialElection.description,
         creatorName = payload.user.name,
+        channelId = payload.channel.id,
         start = startDate,
         end = endDate,
         realtimeResult = partialElection.isRealtime,
