@@ -44,4 +44,7 @@ trait ElectionService {
 
   def updateWinner(result : List[Winner], id : String)
 
+  def getNonCounted(): Future[List[Election]]
+
+  def setIsCounted(id: String): Future[Boolean]
 }

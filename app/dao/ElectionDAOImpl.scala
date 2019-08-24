@@ -191,4 +191,17 @@ class ElectionDAOImpl @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit
     }
   }
 
+  override def getNonCounted(): Future[List[Election]] = {
+    electionsCollection.flatMap(_.find(Json.obj("isCounted" -> false)).cursor[Election]().collect[List]())
+  }
+
+  override def setIsCounted(id: String): Future[Boolean] = {
+    electionsCollection.flatMap(_.update(Json.obj("_id" -> Json.obj("$oid" -> id)),
+      Json.obj("$set" -> Json.obj("isCounted" -> true)))).flatMap{
+      data =>
+        if(data.ok)
+          Future.successful(true)
+        else Future.successful(false)
+    }
+  }
 }
