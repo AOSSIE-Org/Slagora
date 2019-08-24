@@ -1,75 +1,98 @@
-# `Silhouette REST MongoDB Seed` [![Build Status](https://travis-ci.org/adamzareba/play-silhouette-rest-mongo.svg)](https://travis-ci.org/adamzareba/play-silhouette-rest-mongo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1b8de985fc54598be017babd09fa1d6)](https://www.codacy.com/app/adamzareba/play-silhouette-rest-mongo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adamzareba/play-silhouette-rest-mongo&amp;utm_campaign=Badge_Grade)
+# Slagora
 
-Example project for Play Framework that uses [Silhouette](https://github.com/mohiva/play-silhouette) for authentication and authorization, exposed REST API for sign-up, sign-in.
+## Readme
 
-## Basic usage
+_Slack Application (Slagora) that uses [Agora](https://gitlab.com/aossie/Agora/): An Electronic Voting Library implemented in Scala_
 
-### Sign-up
 
-```bash
-curl -X POST http://localhost:9000/api/auth/signup  -H 'Content-Type: application/json' -d '{"identifier": "adam.zareba", "password": "this!Password!Is!Very!Very!Strong!", "email": "adam.zareba@test.pl", "firstName": "Adam", "lastName": "Zaręba"}' -v
-```
+This project is created using the play framework 2.6 seeds [template](https://github.com/playframework/play-scala-seed.g8).
 
-```
-< HTTP/1.1 200 OK
-< Content-Type: application/json; charset=utf-8
-< X-Auth-Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
 
-{
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
-  "expiresOn": "2017-10-06T07:49:27.238+02:00"
-}
-```
+![build status](https://gitlab.com/aossie/Agora-Web/badges/master/build.svg)
 
-### Sign-in
+| Scala | Play | Updated
+| :-: | :-: | :-:
+| <img src="https://raw.githubusercontent.com/OlegIlyenko/scala-icon/master/scala-icon.png " width="25"> | <img src="https://raw.githubusercontent.com/OlegIlyenko/scala-icon/master/play-icon.png " width="25"> | August 08, 2018
 
-_Not necessary just after the sign-up because you already have a valid token._
+To run the development environment for this REST API, you need [Git](https://git-scm.com/), [Sbt](http://www.scala-sbt.org/) and [MongoDB](https://www.mongodb.com/) installed.
 
-```bash
-curl -X POST http://localhost:9000/api/auth/signin/credentials -H 'Content-Type: application/json' -d '{"identifier": "adam.zareba", "password": "this!Password!Is!Very!Very!Strong!"}' -v
-```
+## Table of contents
 
-```
-< HTTP/1.1 200 OK
-< Content-Type: application/json; charset=utf-8
-< X-Auth-Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+- [Slagora](#slagora)
+  - [Readme](#readme)
+  - [Table of contents](#table-of-contents)
+    - [Installation](#installation)
+    - [Running the application](#running-the-application)
+    - [Application](#application)
+    - [Deployment](#deployment)
+    - [Troubleshooting your local environment](#troubleshooting-your-local-environment)
+  - [Further Reading / Useful Links](#further-reading--useful-links)
 
-{
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
-  "expiresOn": "2017-10-06T07:49:27.238+02:00"
-}
-```
 
-### Secured Action with autorization
+### Installation
 
-_The token must belong to a user with Admin role_
+To install the backend, please do the following:
 
-```bash
-curl http://localhost:9000/badPassword -H 'X-Auth-Token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...' -v
-```
+1. Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+2. Clone this repo with `https://gitlab.com/aossie/slagora`
+  - **Note:** *If you just want to use the project, cloning is the best option. However, if you wish to contribute to the project, you will need to fork the project first, and then clone your `Slagora` fork and make your contributions via a branch on your fork.*
+3. Install and run [MongoDB](https://www.mongodb.com/)
+4. Configure [Silhouette](https://www.silhouette.rocks/) to allow Slagora to do Oauth2 authentication:
+    1. Make a copy of `silhouette.conf` and rename it to `silhouetteLocal.conf`.
+    2. Create new applications in [Slack](https://api.slack.com/)
+    3. Download [Ngrok](https://ngrok.com/) and run `ngrok http 9000` copy the link (secured one example https://25ecd5c1.ngrok.io) and save for later use
+    4. Fill the following fields in `silhouetteLocal.conf` with the ids, keys and secrets from your created applications.
 
-```
-< HTTP/1.1 200 OK
-< Content-Type: application/json; charset=utf-8
+        ```
+          # Slack user provider
+                slack_team.clientID = "Your Slack Client ID"
+                slack_team.clientSecret = "Your Slack Client Secret"
+                slack_user.authorizationURL = "https://slack.com/oauth/authorize"
+                slack_user.accessTokenURL = "https://slack.com/api/oauth.access"
+                slack_user.redirectURL = "(your ngrok link you obtained in step 4)/authenticate-user"
+                slack_user.apiURL = "https://slack.com/api/users.identity"
+                slack_user.scope = "chat:write:bot chat:write:user identity.basic identity.email identity.team identity.avatar"
 
-{"result":"qwerty1234"}
-```
-## Built-in users
+            # Slack team provider
+                slack_team.clientID = "Your Slack Client ID"
+                slack_team.clientSecret = "Your Slack Client Secret"
+                slack_team.authorizationURL = "https://slack.com/oauth/authorize"
+                slack_team.accessTokenURL = "https://slack.com/api/oauth.access"
+                slack_team.redirectURL = "(your ngrok link you obtained in step 4)/authenticate-user"
+                slack_team.scope = "incoming-webhook commands bot"
+        ```
+    5. Delete the line `include "silhouetteLocal.conf"` from `silhouetteLocal.conf`.
 
-| username    | password        |
-| ----------- |:---------------:|
-| test1       | test1Password   |
-| test2       | test2Password   |
+5. As above, make a copy of `application.conf` and rename it to `applicationLocal.conf`. 
+    1. Assign your MongoDB URI (e.g. `mongodb://localhost`, if you are connecting to a MongoDB server running in your local computer) to the `mongodb.default.uri` field (e.g `mongodb.default.uri = "mongodb://localhost"`)
+    2. Delete the lines `include "silhouette.conf"` and `include "applicationLocal"` from `applicationLocal.conf`.
 
-## Database reload
+### Running the application
 
-It is possible to reload database with based data with scripts:
-[recreate.bat](database/recreate.bat) or [recreate.sh](database/recreate.sh)
+To start the API, please do the following:
 
-## API documentation
+- Make sure you have java 8 installed and not java 9. For some reasons the build fails with java 9
+- Start the server by running `sbt run` in the root folder.
+- Go to [http://localhost:9000/](http://localhost:9000/) in a browser. Where you will see the API documentation hosted using swagger UI.
+    - **Note:** *Changing any source code while the server is running will automatically recompile and reload the application on the next HTTP request.*
 
-Documentation is available under address: [REST API](http://localhost:9000/docs)
+### Application
 
-# License
+The application will be served: [Slagora](http://localhost:9000/) or using the link generated by Ngrock
 
-The code is licensed under [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0). 
+### Deployment 
+The current development branch is deployed on Heroku and is available at https://slagora.herokuapp.com
+
+### Troubleshooting your local environment
+
+Always `git pull` and get the latest from master. [Google](https://www.google.com) and [Stackoverflow](https://stackoverflow.com/) are your friends. You can find answers for most technical problems there. If you run into problems you can't resolve, feel free to open an issue.
+
+## Further Reading / Useful Links
+
+* [sbt](http://www.scala-sbt.org/)
+* [Play framework](https://www.playframework.com/)
+* [Slack API](https://api.slack.com)
+* [Scala](https://www.scala-lang.org/)
+* [Silhouette Documentation](https://www.silhouette.rocks/docs)
+* [Play2-ReactiveMongoDB](http://reactivemongo.org/releases/0.1x/documentation/tutorial/play.html)
+* [Swagger-play](https://github.com/swagger-api/swagger-play)
