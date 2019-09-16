@@ -23,7 +23,7 @@ class ApplicationController @Inject()(components: ControllerComponents,
     */
   @ApiOperation(value = "", hidden = true)
   def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+    Ok(views.html.index())
   }
 
   @ApiOperation(value = "", hidden = true)
