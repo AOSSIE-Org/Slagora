@@ -1,0 +1,69 @@
+@(options: String, user: String, channel: String)
+
+{
+    "channel": "@channel",
+    "user": "@user",
+    "text": ":tada: Select an election.",
+    "attachments": [],
+    "blocks": [
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": ":tada: Select the election you will want to get details about."
+              			}
+              		]
+              	},
+              	{
+              		"type": "divider"
+              	},
+              	{
+              		"type": "section",
+              		"text": {
+              			"type": "mrkdwn",
+              			"text": "Pick an election from the dropdown list"
+              		},
+              		"accessory": {
+              			"type": "static_select",
+              			"action_id": "nothing:electionSelected",
+              			"placeholder": {
+              				"type": "plain_text",
+              				"text": "Select an item",
+              				"emoji": true
+              			},
+              			"options": [
+              				@options
+              			]
+              		}
+              	},
+              	{
+              		"type": "divider"
+              	},
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": "Use the *delete* button below to delete this message. This is visible only to you."
+              			}
+              		]
+              	},
+              	{
+              		"type": "actions",
+              		"elements": [
+              			{
+              				"type": "button",
+              				"action_id": "nothing:delete",
+              				"style": "danger",
+              				"text": {
+              					"type": "plain_text",
+              					"text": ":do_not_litter: Delete",
+              					"emoji": true
+              				},
+              				"value": "click_me_123"
+              			}
+              		]
+              	}
+              ]
+}

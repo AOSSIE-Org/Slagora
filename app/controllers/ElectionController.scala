@@ -8,7 +8,7 @@ import com.mohiva.play.silhouette.api.util.Clock
 import io.swagger.annotations.{Api, ApiImplicitParam, ApiImplicitParams, ApiOperation}
 import models.{BallotData, Election, PartialElection}
 import models.security.{SlackTeam, SlackTeamBuilder, SlackUser, SlackUserBuilder}
-import models.slack_api.payloads.{BallotActionPayload, DateActionPayload, NewElectionDialogPayload, SimpleActionPayload}
+import models.slack_api.payloads._
 import models.slack_api.{ActionIDs, Commands, DialogStates, SlashCommandPayLoad}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsError, Json}
@@ -45,6 +45,23 @@ class ElectionController @Inject()(messagesApi: MessagesApi,
         case Commands.CREATE =>
           if(user.isDefined && team.isDefined) {
             slackAPIService.sendElectionDialog(payload, team.get)
+            Ok("")
+          } else if(team.isDefined) {
+            slackAPIService.userSignUpOnError(payload.channelId, payload.userId, team.get)
+            Ok("")
+          } else {
+            NotFound("User requested team not found.")
+          }
+
+        case Commands.POLLS | Commands.ELECTIONS =>
+          if(user.isDefined && team.isDefined) {
+            electionService.userElectionList(user.get.loginInfo).flatMap{ elections =>
+              if(elections.nonEmpty)
+                slackAPIService.sendElectionsListForView(elections, team.get, payload)
+              else {
+                slackAPIService.sendNoElectionFound(team.get, payload)
+              }
+            }
             Ok("")
           } else if(team.isDefined) {
             slackAPIService.userSignUpOnError(payload.channelId, payload.userId, team.get)
@@ -263,6 +280,22 @@ class ElectionController @Inject()(messagesApi: MessagesApi,
                   if(team.isDefined)
                     slackAPIService.deleteMsg(data.response_url, team.get)
                 }
+            }.recoverTotal { error =>
+              logger.error(s"Failed to validate with error: $error")
+              Future.successful(BadRequest(Json.toJson("Bad Request")))
+            }
+            Future.successful(Ok(""))
+          case ActionIDs.ELECTION_SELECTED =>
+            Future.successful(Ok(""))
+            payload.validate[ElectionSelectedActionPayload].map { data =>
+              for {
+                election <- electionService.get(data.actions.head.selected_option.value)
+                team <- teamService.get(SlackTeam.buildLoginInfo(data.team.id))
+              } yield {
+                if(election.isDefined && team.isDefined) {
+                  slackAPIService.sendElectionDetails(election.get, team.get, data)
+                }
+              }
             }.recoverTotal { error =>
               logger.error(s"Failed to validate with error: $error")
               Future.successful(BadRequest(Json.toJson("Bad Request")))

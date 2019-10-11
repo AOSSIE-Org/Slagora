@@ -3,9 +3,9 @@ package slack_api
 import agora.model.Candidate
 import com.mohiva.play.silhouette.api.util.HTTPLayer
 import javax.inject.Inject
-import models.{Ballot, BallotData, Election, PartialElection}
+import models._
 import models.security.{SlackTeam, WebHook}
-import models.slack_api.payloads.{NewElectionDialogPayload, SimpleActionPayload}
+import models.slack_api.payloads.{ElectionSelectedActionPayload, NewElectionDialogPayload, SimpleActionPayload}
 import models.slack_api.{DialogStates, SlashCommandPayLoad}
 import org.joda.time.{DateTimeZone, LocalDate}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -269,6 +269,147 @@ class SlackAPIProvider @Inject()(
         "Content-type" -> "application/json",
         "Authorization" -> s"Bearer ${team.bot.bot_access_token}")
     http.post(Json.parse(views.txt.slack.messages.resultswithpublicballots(simpleActionPayload.channel.id, simpleActionPayload.user.id, election.name, election.start.toString("yyyy-MM-dd HH:mm:ss"), election.end.toString("yyyy-MM-dd HH:mm:ss"), election.votingAlgo, s, formatWinners(winners)).body))
+      .flatMap { response =>
+        Future.successful(response.json)
+      }
+  }
+
+  override def sendElectionsListForView(elections: List[Election], team: SlackTeam, simpleActionPayload: SimpleActionPayload): Future[JsValue] = {
+
+    var optionsString = ""
+
+    for (election <- elections) {
+      if (election != elections.last) {
+        optionsString = optionsString +
+                        s"""{
+                           |					"text": {
+                           |						"type": "plain_text",
+                           |						"text": "${election.name}",
+                           |						"emoji": true
+                           |					},
+                           |					"value": "${election.id.get}"
+                           |				},
+                         """.stripMargin
+      } else {
+        optionsString = optionsString +
+          s"""{
+             |					"text": {
+             |						"type": "plain_text",
+             |						"text": "${election.name}",
+             |						"emoji": true
+             |					},
+             |					"value": "${election.id.get}"
+             |}
+            """.stripMargin
+      }
+    }
+
+    val http = httpLayer.url(slackAPISettings.baseUrl.concat(slackAPISettings.sendEphemeral))
+      .addHttpHeaders(
+        "Content-type" -> "application/json",
+        "Authorization" -> s"Bearer ${team.bot.bot_access_token}")
+    //@(options: String, user: String, channel: String)
+    http.post(Json.parse(views.txt.slack.messages.selectelectiontoview(optionsString, simpleActionPayload.user.id, simpleActionPayload.channel.id).body))
+      .flatMap { response =>
+        Future.successful(response.json)
+      }
+
+  }
+
+  override def sendElectionsListForView(elections: List[Election], team: SlackTeam, payLoad: SlashCommandPayLoad): Future[JsValue] = {
+    var optionsString = ""
+
+    for (election <- elections) {
+      if (election != elections.last) {
+        optionsString = optionsString +
+          s"""{
+             |					"text": {
+             |						"type": "plain_text",
+             |						"text": "${election.name}",
+             |						"emoji": true
+             |					},
+             |					"value": "${election.id.get}"
+             |				},
+                         """.stripMargin
+      } else {
+        optionsString = optionsString +
+          s"""{
+             |					"text": {
+             |						"type": "plain_text",
+             |						"text": "${election.name}",
+             |						"emoji": true
+             |					},
+             |					"value": "${election.id.get}"
+             |}
+            """.stripMargin
+      }
+    }
+
+    val http = httpLayer.url(slackAPISettings.baseUrl.concat(slackAPISettings.sendEphemeral))
+      .addHttpHeaders(
+        "Content-type" -> "application/json",
+        "Authorization" -> s"Bearer ${team.bot.bot_access_token}")
+    //@(options: String, user: String, channel: String)
+    http.post(Json.parse(views.txt.slack.messages.selectelectiontoview(optionsString, payLoad.userId, payLoad.channelId).body))
+      .flatMap { response =>
+        Future.successful(response.json)
+      }
+
+  }
+
+  override def sendElectionDetails(election: Election, team: SlackTeam, payload: ElectionSelectedActionPayload): Future[JsValue] = {
+    def formatCandidates(candidates: List[String]): String = {
+      if (candidates.isEmpty) {
+        "No candidate"
+      } else {
+        var candidatesString = candidates.head
+        for (candidate <- candidates.tail) {
+          candidatesString = candidatesString + s", $candidate"
+        }
+        candidatesString
+      }
+    }
+
+    def formatWinners(winners: List[Winner]): String = {
+      if (winners.isEmpty) {
+        "No winner(s)"
+      } else {
+        var winnersString = winners.head.candidate.name
+        for (winner <- winners.tail) {
+          winnersString = winnersString + s", ${winner.candidate.name}"
+        }
+        winnersString
+      }
+    }
+
+    val http = httpLayer.url(slackAPISettings.baseUrl.concat(slackAPISettings.sendEphemeral))
+      .addHttpHeaders(
+        "Content-type" -> "application/json",
+        "Authorization" -> s"Bearer ${team.bot.bot_access_token}")
+    http.post(Json.parse(views.txt.slack.messages.electiondetails(
+      election.id.get, election.name, election.start.toString("yyyy-MM-dd HH:mm:ss"), election.end.toString("yyyy-MM-dd HH:mm:ss"), election.votingAlgo, formatCandidates(election.candidates), formatWinners(election.winners), election.realtimeResult.toString, election.description, payload.user.id, payload.channel.id).body))
+      .flatMap { response =>
+        Future.successful(response.json)
+      }
+  }
+
+  override def sendNoElectionFound(team: SlackTeam, simpleActionPayload: SimpleActionPayload): Future[JsValue] = {
+    val http = httpLayer.url(slackAPISettings.baseUrl.concat(slackAPISettings.sendEphemeral))
+      .addHttpHeaders(
+        "Content-type" -> "application/json",
+        "Authorization" -> s"Bearer ${team.bot.bot_access_token}")
+    http.post(Json.parse(views.txt.slack.messages.noelections(simpleActionPayload.user.id, simpleActionPayload.channel.id).body))
+      .flatMap { response =>
+        Future.successful(response.json)
+      }
+  }
+
+  override def sendNoElectionFound(team: SlackTeam, payLoad: SlashCommandPayLoad): Future[JsValue] = {
+    val http = httpLayer.url(slackAPISettings.baseUrl.concat(slackAPISettings.sendEphemeral))
+      .addHttpHeaders(
+        "Content-type" -> "application/json",
+        "Authorization" -> s"Bearer ${team.bot.bot_access_token}")
+    http.post(Json.parse(views.txt.slack.messages.noelections(payLoad.userId, payLoad.channelId).body))
       .flatMap { response =>
         Future.successful(response.json)
       }
