@@ -1,0 +1,47 @@
+@(user: String, channel: String)
+
+{
+    "channel": "@channel",
+    "user": "@user",
+    "text": ":tada: You have voted already",
+    "attachments": [],
+    "blocks": [
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": ":tada: *No election available*\nCreate one using the command */slagora create*."
+              			}
+              		]
+              	},
+              	{
+              		"type": "divider"
+              	},
+              	{
+              		"type": "context",
+              		"elements": [
+              			{
+              				"type": "mrkdwn",
+              				"text": "Use the *delete* button below to delete this message. This is visible only to you."
+              			}
+              		]
+              	},
+              	{
+              		"type": "actions",
+              		"elements": [
+              			{
+              				"type": "button",
+                              "action_id": "nothing:delete",
+                              "style": "danger",
+              				"text": {
+              					"type": "plain_text",
+              					"text": ":do_not_litter: Delete",
+              					"emoji": true
+              				},
+              				"value": "click_me_123"
+              			}
+              		]
+              	}
+              ]
+}
