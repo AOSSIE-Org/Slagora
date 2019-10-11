@@ -7,5 +7,7 @@ object Commands extends Enumeration {
 
   val HELP = "help"
   val CREATE = "create"
+  val POLLS = "polls"
+  val ELECTIONS = "elections"
 
 }

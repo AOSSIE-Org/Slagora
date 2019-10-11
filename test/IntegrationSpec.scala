@@ -11,14 +11,4 @@ import play.api.test.Helpers._
  */
 @RunWith(classOf[JUnitRunner])
 class IntegrationSpec extends Specification {
-
-  "Application" should {
-
-    "work from within a browser" in new WithBrowser {
-
-      browser.goTo("http://localhost:" + port)
-
-      browser.pageSource must contain("An Amazing Slack App That Helps Team Create Polls.")
-    }
-  }
 }

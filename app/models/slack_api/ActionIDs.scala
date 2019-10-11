@@ -13,5 +13,6 @@ object ActionIDs extends Enumeration {
   val GENERAL_SIGN_UP = "signupGeneral"
   val VOTE = "vote"
   val CANDIDATE_SELECTED = "candidateSelected"
+  val ELECTION_SELECTED = "electionSelected"
   val RESULT = "result"
 }
