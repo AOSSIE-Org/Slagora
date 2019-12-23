@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>Slagora</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/vendor.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+
+    <!-- script
+    ================================================== -->
+    <script src="assets/js/modernizr.js"></script>
+    <script src="assets/js/pace.min.js"></script>
+
+    <!-- favicons
+    ================================================== -->
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <style>
+        .home-content__main {
+            width: 100vw;
+            max-width: 100vw;
+            display: flex;
+            padding-bottom: 0;
+            position: absolute;
+            top: 50vh;
+            transform: translateY(-50%);
+            animation: none !important;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .home-content__left,
+        .home-content__right {
+            flex: 1 0 0;
+            width: 50vw;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            padding-left: 5vw;
+        }
+
+        .home-content__main h1 {
+            margin-top: 5vh;
+            width: 100%;
+            font-size: 4.5rem;
+        }
+
+        .home-content__main h3 {
+            color: #f1f1f1;
+            width: 60%;
+        }
+
+        .home-content__button {
+            margin-top: 3rem;
+            font-weight: 500;
+        }
+
+        .home-content__button a {
+            display: inline-flex;
+            width: 180px;
+            height: 60px;
+            border-radius: 5px;
+            background-color: #00a650;
+            color: #ffffff;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s ease-in;
+        }
+
+        .home-content__button a:hover {
+            background-color: #00773a;
+        }
+
+        .home-content__image {
+            width: 500px;
+            height: 500px;
+        }
+
+        .home-content h1::before {
+            height: 0;
+        }
+    </style>
+
+</head>
+
+<body id="top">
+
+    <div id="preloader">
+        <div id="loader"></div>
+    </div>
+
+    <!-- header
+================================================== -->
+    <header class="s-header">
+
+        <div class="header-logo">
+            <a class="site-logo" href="/">
+                <img src="assets/images/logo.png" alt="Homepage">
+            </a>
+        </div>
+
+        <nav class="row header-nav-wrap wide">
+            <ul class="header-main-nav">
+                <li class="current"><a class="smoothscroll" href="#home" title="intro">Intro</a></li>
+                <li><a class="smoothscroll" href="#about" title="about">About</a></li>
+                <li><a class="smoothscroll" href="#features" title="features">Features</a></li>
+                <li><a class="smoothscroll" href="#apps" title="apps">Other Applications</a></li>
+                <li><a class="smoothscroll" href="#download" title="download">Install</a></li>
+
+                <li style="margin-top: 10px;"><a class="smoothscroll" href="/authenticate/slack_user"
+                        title="Sign In"><img src="assets/images/sign_in_with_slack.png" alt="Sign In With Slack"></a>
+                </li>
+            </ul>
+
+            <ul class="header-social">
+                <li><a href="#0"><i class="fab fa-facebook-f" aria-hidden="true"></i></a></li>
+                <li><a href="#0"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
+                <li><a href="#0"><i class="fab fa-instagram" aria-hidden="true"></i></a></li>
+            </ul>
+        </nav>
+
+        <a class="header-menu-toggle" href="#"><span>Menu</span></a>
+
+    </header> <!-- end header -->
+
+    <!-- home
+================================================== -->
+    <section id="home" class="s-home target-section">
+
+        <div class="home-content">
+
+            <div class="row home-content__main wide">
+                <div class="home-content__left">
+                    <h1>
+                        Your team has been registered successfully
+                    </h1>
+
+                    <h3>
+                        You can now go back to Slack and start using Slagora in your workspace.
+                    </h3>
+
+                    <div class="home-content__button">
+                        <a href="https://slack.com/">
+                            Go back to Slack
+                        </a>
+                    </div>
+                </div>
+                <div class="home-content__right">
+                    <img src="assets/images/smiley_face.svg" alt="" class="home-content__image">
+                </div>
+            </div> <!-- end home-content__main -->
+    </section> <!-- end s-home -->
+
+
+    <!-- footer
+================================================== -->
+    <footer class="s-footer footer">
+
+        <div class="row footer__top">
+            <div class="col-six md-full">
+                <h1 class="display-2">
+                    Let's Stay In Touch.
+                </h1>
+                <p class="lead">
+                    Subscribe for updates, special offers and more.
+                </p>
+            </div>
+            <div class="col-six md-full footer__subscribe end">
+                <div class="subscribe-form">
+                    <form id="mc-form" class="group" novalidate="true">
+
+                        <input type="email" value="" name="EMAIL" class="email" id="mc-email"
+                            placeholder="Email Address" required="">
+
+                        <input type="submit" name="subscribe" value="Sign Up">
+
+                        <label for="mc-email" class="subscribe-message"></label>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row footer__bottom">
+            <div class="col-five tab-full">
+                <div class="footer__logo">
+                    <a href="index.html">
+                        <img src="assets/images/logo.png" alt="Homepage">
+                    </a>
+                </div>
+
+                <p>
+                    Slagora is one of those ready made slack applications that enable teams to create interactive polls
+                    using preferential voting algorithms.
+
+                </p>
+
+                <ul class="footer__social">
+                    <li><a href="#0"><i class="fab fa-facebook-f" aria-hidden="true"></i></a></li>
+                    <li><a href="#0"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
+                    <li><a href="#0"><i class="fab fa-instagram" aria-hidden="true"></i></a></li>
+                </ul>
+            </div>
+
+            <div class="col-six tab-full end">
+                <ul class="footer__site-links">
+                    <li><a class="smoothscroll" href="#home" title="intro">Intro</a></li>
+                    <li><a class="smoothscroll" href="#about" title="about">About</a></li>
+                    <li><a class="smoothscroll" href="#features" title="features">Features</a></li>
+                    <li><a class="smoothscroll" href="#apps" title="apps">Other Applications</a></li>
+                    <li><a class="smoothscroll" href="#download" title="download">Install</a></li>
+                </ul>
+
+                <p class="footer__contact">
+                    Do you have a question? Send us a word: <br>
+                    <a href="mailto:#0" class="footer__mail-link">support&#64;aossie.org</a>
+                </p>
+
+                <div class="cl-copyright">
+                    <span>
+                        Copyright &copy; <a href="https://aossie.org" target="_blank">AOSSIE </a>
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script> All rights reserved.
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="go-top">
+            <a class="smoothscroll" title="Back to Top" href="#top"></a>
+        </div>
+
+    </footer> <!-- end s-footer -->
+
+
+    <!-- Java Script
+================================================== -->
+    <script src="assets/js/jquery-3.2.1.min.js"></script>
+    <script src="assets/js/plugins.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body>
