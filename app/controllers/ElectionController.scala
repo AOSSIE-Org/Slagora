@@ -70,6 +70,17 @@ class ElectionController @Inject()(messagesApi: MessagesApi,
             NotFound("User requested team not found.")
           }
 
+        case Commands.HELP =>
+          if(user.isDefined && team.isDefined) {
+            slackAPIService.sendHelpMsg(payload.channelId, payload.userId, team.get)
+            Ok("")
+          } else if(team.isDefined) {
+            slackAPIService.userSignUpOnError(payload.channelId, payload.userId, team.get)
+            Ok("")
+          } else {
+            NotFound("User requested team not found.")
+          }
+
         case _ => NotFound("Slash text command not found.")
       }
     }
