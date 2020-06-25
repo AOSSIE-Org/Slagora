@@ -7,8 +7,8 @@ import models._
 import org.joda.time.DateTime
 import play.api.libs.json._
 import play.modules.reactivemongo._
-import reactivemongo.api.ReadPreference
-import play.modules.reactivemongo.json._
+import reactivemongo.api.{Cursor, ReadPreference}
+import reactivemongo.play.json._
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.play.json.collection.JSONCollection
 import service.ElectionService
@@ -49,7 +49,7 @@ class ElectionDAOImpl @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit
 
   override def userElectionList(loginInfo: LoginInfo): Future[List[Election]] = {
     val query = Json.obj("loginInfo" -> loginInfo)
-    electionsCollection.flatMap(_.find(query).cursor[Election]().collect[List]())
+    electionsCollection.flatMap(_.find(query).cursor[Election]().collect[List](Int.MaxValue,Cursor.FailOnError[List[Election]]()))
   }
 
   override def getCandidates(id: String): Future[List[String]] = {
@@ -192,7 +192,7 @@ class ElectionDAOImpl @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit
   }
 
   override def getNonCounted(): Future[List[Election]] = {
-    electionsCollection.flatMap(_.find(Json.obj("isCounted" -> false)).cursor[Election]().collect[List]())
+    electionsCollection.flatMap(_.find(Json.obj("isCounted" -> false)).cursor[Election]().collect[List](Int.MaxValue,Cursor.FailOnError[List[Election]]()))
   }
 
   override def setIsCounted(id: String): Future[Boolean] = {

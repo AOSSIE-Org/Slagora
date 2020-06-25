@@ -7,6 +7,7 @@ import models.PartialElection
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
+import reactivemongo.api.Cursor
 import reactivemongo.play.json.collection.JSONCollection
 import service.PartialElectionService
 import reactivemongo.play.json._
@@ -40,7 +41,7 @@ class PartialElectionDAOImpl @Inject()(val reactiveMongoApi: ReactiveMongoApi, c
   }
 
   def findExpired(dateTime: DateTime): Future[Seq[PartialElection]] = {
-    electionsCollection.flatMap(_.find(Json.obj()).cursor[PartialElection]().collect[Seq]())
+    electionsCollection.flatMap(_.find(Json.obj()).cursor[PartialElection]().collect[Seq](Int.MaxValue,Cursor.FailOnError[Seq[PartialElection]]()))
       .flatMap(elections => Future.successful(elections.filter(e => e.expiresOn.isBefore(dateTime))))
   }
 
