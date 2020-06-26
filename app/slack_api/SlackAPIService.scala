@@ -28,5 +28,6 @@ trait SlackAPIService {
   def sendNoElectionFound(team: SlackTeam, simpleActionPayload: SimpleActionPayload): Future[JsValue]
   def sendNoElectionFound(team: SlackTeam, payLoad: SlashCommandPayLoad): Future[JsValue]
   def sendResultsMsg(election: Election, team: SlackTeam): Future[JsValue]
+  def sendHelpMsg(channel: String, user: String, team: SlackTeam): Future[JsValue]
 
 }

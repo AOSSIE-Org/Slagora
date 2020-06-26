@@ -507,4 +507,18 @@ class SlackAPIProvider @Inject()(
         Future.successful(response.json)
       }
   }
+
+  override def sendHelpMsg(channel: String, user: String, team: SlackTeam): Future[JsValue] = {
+    val http = httpLayer.url(slackAPISettings.baseUrl.concat(slackAPISettings.sendEphemeral))
+      .addHttpHeaders(
+        "Content-type" -> "application/json",
+        "Authorization" -> s"Bearer ${team.accessToken}")
+    http.post(Json.parse(views.txt.slack.messages.help(channel, user).body.trim))
+      .flatMap { response =>
+        Future.successful{
+          logger.error(response.toString)
+          response.json
+        }
+      }
+  }
 }

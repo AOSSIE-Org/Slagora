@@ -26,11 +26,11 @@
               		"type": "section",
               		"text": {
               			"type": "mrkdwn",
-              			"text": "You can start using *Slagora* by typing the command *\slagora*.\nSign up so you can have access to all the features provided by *Slagora*."
+              			"text": "You can start using *Slagora* by typing the command */slagora*.\nSign up so you can have access to all the features provided by *Slagora*."
               		},
               		"accessory": {
               			"type": "button",
-                          "url": "https://7602b380.ngrok.io/authenticate/slack_user",
+                          "url": "https://99d47a45c4ea.ngrok.io/authenticate/slack_user",
                           "action_id": "blabla:signupGeneral",
                           "style": "primary",
               			"text": {
