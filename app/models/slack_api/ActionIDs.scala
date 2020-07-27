@@ -15,4 +15,5 @@ object ActionIDs extends Enumeration {
   val CANDIDATE_SELECTED = "candidateSelected"
   val ELECTION_SELECTED = "electionSelected"
   val RESULT = "result"
+  val ELECTION_SELECTED_FOR_DELETE = "electionSelectedForDelete"
 }
