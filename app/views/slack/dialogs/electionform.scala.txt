@@ -31,8 +31,68 @@
                   "value": "Borda"
                 },
                 {
+                  "label": "Contingent Method",
+                  "value": "Contingent Method"
+                },
+                {
+                  "label": "Coomb's",
+                  "value": "Coomb’s"
+                },
+                {
+                  "label": "Copeland",
+                  "value": "Copeland"
+                },
+                {
+                  "label": "Exhaustive Ballot",
+                  "value": "Exhaustive ballot"
+                },
+                {
+                  "label": "Exhaustive ballot with drop off",
+                  "value": "Exhaustive ballot with dropoff"
+                },
+                {
+                  "label": "Instant Runoff 2-round",
+                  "value": "Instant Runoff 2-round"
+                },
+                {
+                  "label": "Kemeny Young",
+                  "value": "Kemeny-Young"
+                },
+                {
                   "label": "Majority",
                   "value": "Majority"
+                },
+                {
+                  "label": "Minimax Condorcet",
+                  "value": "Minimax Condorcet"
+                },
+                {
+                  "label": "Nanson",
+                  "value": "Nanson"
+                },
+                {
+                  "label": "Oklahoma",
+                  "value": "Oklahoma"
+                },
+                {
+                  "label": "Random Ballot",
+                  "value": "Random Ballot"
+                },
+                {
+                  "label": "Satisfactory Approval Voting",
+                  "value": "SAV"
+                },
+                {
+                  "label": "Sequential Proportional Approval voting",
+                  "value": "Sequential Proportional Approval voting"
+                },
+                {
+                  "label": "SmithSet",
+                  "value": "SmithSet"
+                },
+                {
+                  "label": "Uncovered Set",
+                  "value": "Uncovered Set"
                 }
               ]
         },

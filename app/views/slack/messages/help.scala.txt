@@ -1,0 +1,110 @@
+@(channel: String, user: String)
+{
+    "channel": "@channel",
+    "user": "@user",
+    "text": "Get help on how to use Slagora!",
+    "attachments": [],
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Hey there Welcome to Slagora. I'm here to help you create and manage elections."
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": ":one: *`/slagora signin`* - Use this command to signin and start creating polls using *`Slagora`*"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": ":two: *`/slagora create`* - Use this command to create a new election"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": ":three:  *`/slagora polls`* - Use this command to get information about an existing election"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": ":four:  *`/slagora elections`* - This command is similar in functionality to the *polls* command"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": ":five:  *`/slagora results`* - Use this command whenever you want to view election results of a particular elction you either *created* or *participated* in. "
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": ":six:  *`/slagora delete`* - Use this command whenever you want to delete election an election you *created*. Note only *`finished`* or *`pending`* elections can be deleted."
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": ":seven:  *`/slagora help`* - Use this command whenever you are stuck and want to view all commands."
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": ":eight:  *`/slagora feedback`* - Use this command whenever want to provide some feedback to the *`Slagora`* team."
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Note*: If you need any other assistance or found a bug, create an issue <https://gitlab.com/aossie/slagora/issues|here>. You can also have a look at this <https://bit.ly/3fRkXIK|tutorial>"
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "Use the button below to delete this message. This is visible only to you."
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"action_id": "nothing:delete",
+					"style": "danger",
+					"text": {
+						"type": "plain_text",
+						"text": ":do_not_litter: Delete",
+						"emoji": true
+					},
+					"value": "click_me_123"
+				}
+			]
+		}
+	]
+}
