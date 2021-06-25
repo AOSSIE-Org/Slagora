@@ -70,6 +70,34 @@ class ElectionController @Inject()(messagesApi: MessagesApi,
             NotFound("User requested team not found.")
           }
 
+        case Commands.HELP =>
+          if(user.isDefined && team.isDefined) {
+            slackAPIService.sendHelpMsg(payload.channelId, payload.userId, team.get)
+            Ok("")
+          } else if(team.isDefined) {
+            slackAPIService.userSignUpOnError(payload.channelId, payload.userId, team.get)
+            Ok("")
+          } else {
+            NotFound("User requested team not found.")
+          }
+
+        case Commands.DELETE =>
+          if(user.isDefined && team.isDefined) {
+            electionService.userElectionList(user.get.loginInfo).flatMap{ elections =>
+              if(elections.nonEmpty)
+                slackAPIService.sendElectionsListForDelete(elections, team.get, payload)
+              else {
+                slackAPIService.sendNoElectionFound(team.get, payload)
+              }
+            }
+            Ok("")
+          } else if(team.isDefined) {
+            slackAPIService.userSignUpOnError(payload.channelId, payload.userId, team.get)
+            Ok("")
+          } else {
+            NotFound("User requested team not found.")
+          }
+
         case _ => NotFound("Slash text command not found.")
       }
     }
@@ -301,6 +329,24 @@ class ElectionController @Inject()(messagesApi: MessagesApi,
               Future.successful(BadRequest(Json.toJson("Bad Request")))
             }
             Future.successful(Ok(""))
+
+          case ActionIDs.ELECTION_SELECTED_FOR_DELETE =>
+            Future.successful(Ok(""))
+            payload.validate[ElectionSelectedActionPayload].map { data =>
+              for {
+                election <- electionService.get(data.actions.head.selected_option.value)
+                team <- teamService.get(SlackTeam.buildLoginInfo(data.team.id))
+              } yield {
+                if(election.isDefined && team.isDefined) {
+                  electionService.delete(election.get.id.get).flatMap(_ => slackAPIService.sendElectionDetails(election.get, team.get, data))
+                }
+              }
+            }.recoverTotal { error =>
+              logger.error(s"Failed to validate with error: $error")
+              Future.successful(BadRequest(Json.toJson("Bad Request")))
+            }
+            Future.successful(Ok(""))
+
           case _ => Future.successful(Ok(""))
         }
       case _ => Future.successful(Ok(""))

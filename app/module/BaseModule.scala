@@ -16,7 +16,7 @@ class BaseModule extends AbstractModule with ScalaModule {
   /**
    * Configures the module.
    */
-  def configure(): Unit = {
+  override def configure(): Unit = {
     bind[ElectionService].to[ElectionDAOImpl]
     bind[PartialElectionService].to[PartialElectionDAOImpl]
     bind[BallotDataService].to[BallotDataDAOImpl]

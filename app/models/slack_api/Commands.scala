@@ -9,5 +9,6 @@ object Commands extends Enumeration {
   val CREATE = "create"
   val POLLS = "polls"
   val ELECTIONS = "elections"
+  val DELETE = "delete"
 
 }

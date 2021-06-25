@@ -67,8 +67,7 @@ class CredentialsAuthController @Inject()(components: ControllerComponents,
             userService.get(profile.loginInfo).flatMap{
               case Some(_) => Future.successful(Conflict("User already exists"))
               case _ => userService.save(profile)
-                .flatMap(_ => Future.successful(Ok("Thank you for using Slagora. Your information has been registered successfully. You can now go back to Slack")))
-
+                .flatMap(_ => Future.successful(Ok(views.html.signin())))
             }
         }
     }).recover {
