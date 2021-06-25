@@ -6,6 +6,7 @@ import models.BallotData
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
+import reactivemongo.api.Cursor
 import reactivemongo.play.json.collection.JSONCollection
 import reactivemongo.play.json._
 import reactivemongo.play.json.collection._
@@ -39,7 +40,7 @@ class BallotDataDAOImpl @Inject()(val reactiveMongoApi: ReactiveMongoApi, clock:
   }
 
   def findExpired(dateTime: DateTime): Future[Seq[BallotData]] = {
-    ballotCollection.flatMap(_.find(Json.obj()).cursor[BallotData]().collect[Seq]())
+    ballotCollection.flatMap(_.find(Json.obj()).cursor[BallotData]().collect[Seq](Int.MaxValue,Cursor.FailOnError[Seq[BallotData]]()))
       .flatMap(elections => Future.successful(elections.filter(e => e.expiresOn.isBefore(dateTime))))
   }
 
