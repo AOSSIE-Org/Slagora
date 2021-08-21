@@ -13,7 +13,7 @@ trait SlackAPIService {
   def sendElectionDialog(payload: SlashCommandPayLoad, team: SlackTeam): Future[JsValue]
   def sendDateMsg(payload: NewElectionDialogPayload, team: SlackTeam, partialElection: PartialElection): Future[JsValue]
   def sendCompletedElectionMsg(election: Election, response_url: String, team: SlackTeam): Future[JsValue]
-  def sendVoteInviteMsg(election: Election, team: SlackTeam, simpleActionPayload: SimpleActionPayload): Future[JsValue]
+  def sendVoteInviteMsg(election: Election, team: SlackTeam): Future[JsValue]
   def deleteMsg(responseUrl: String, team: SlackTeam): Future[JsValue]
   def userSignUpOnError(channel: String, user: String, team: SlackTeam): Future[JsValue]
   def userSignUp(webHook: WebHook, team: SlackTeam): Future[JsValue]

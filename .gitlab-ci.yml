@@ -1,23 +1,20 @@
-image: java:8
+image: openjdk:8
 
-stages:
-  - test
-  
 before_script:
-  - echo "deb [check-valid-until=no] http://cdn-fastly.deb.debian.org/debian jessie main" > /etc/apt/sources.list.d/jessie.list
-  - echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
-  - sed -i '/deb http:\/\/\(deb\|httpredir\).debian.org\/debian jessie.* main/d' /etc/apt/sources.list
-  - echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf
-  - apt-get update -y
-  - apt-get install apt-transport-https -y
+  # Enable the usage of sources over https
+  - apt-get update -yqq
+  - apt-get install apt-transport-https -yqq
+  # Add keyserver for SBT
+  - echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+  - curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | apt-key add
   # Install SBT
-  - echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
-  - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
-  - apt-get update -y
-  - apt-get install sbt -y
+  - apt-get update -yqq
+  - apt-get install sbt -yqq
+
+  # Log the sbt version
   - sbt sbtVersion
 
 test:
-  stage: test
   script:
-    - sbt test
+    # Execute your project's tests
+    - sbt clean test

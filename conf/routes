@@ -8,8 +8,6 @@ GET         /docs                                                           cont
 
 # Home page
 GET         /                                                               controllers.ApplicationController.index
-GET         /badPassword                                                    controllers.ApplicationController.badPassword
-GET         /colors                                                         controllers.ApplicationController.colors
 GET         /authenticate/:provider                                         controllers.CredentialsAuthController.authenticate(provider)
 GET         /authenticate-user                                              controllers.CredentialsAuthController.authenticateUser
 GET         /authenticate-team                                              controllers.CredentialsAuthController.authenticateTeam
@@ -18,5 +16,11 @@ GET         /authenticate-team                                              cont
 POST        /command                                                        controllers.ElectionController.receiveSlashCommandPayLoad
 POST        /message                                                        controllers.ElectionController.interactiveMsgPayload
 
+# Valid API calls
+PUT         /api/v1/election                                                controllers.ApiController.createElection
+GET         /api/v1/election/:electionId                                    controllers.ApiController.getElection(electionId)
+GET         /api/v1/election/all                                            controllers.ApiController.getElections
+DELETE      /api/v1/election/:electionId                                    controllers.ApiController.deleteElection(electionId)
+GET         /api/v1/election/:electionId/reminder                           controllers.ApiController.sendReminder(electionId)
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                                   controllers.Assets.versioned(path="/public", file: Asset)
