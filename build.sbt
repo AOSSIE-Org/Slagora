@@ -6,7 +6,7 @@ lazy val `slagora` = (project in file(".")).enablePlugins(PlayScala)
 scalacOptions ++= Seq("-deprecation", "-language:_")
 
 scalaVersion := "2.12.3"
-val reactiveMongoVersion = "0.20.10-play27"
+val reactiveMongoVersion = "0.20.13-play27"
 val silhouetteVersion = "5.0.3"
 val playMailerVersion = "7.0.1"
 val playJsonVersion = "2.7.4"
