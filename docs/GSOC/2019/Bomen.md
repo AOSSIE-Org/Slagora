@@ -10,7 +10,7 @@
 - Project : 
   1. Slagora: https://gitlab.com/aossie/slagora
 - Live demo of the Projects :  
-  1. Slagora: https://slagora.herokuapp.com/
+  1. Slagora: https://slagora.com/
 =  
 # Slagora
 
@@ -55,7 +55,7 @@ After that we started working on the election services and models.Then we search
  
 We then created endpoints to receive slash command payloads from Slack. Implemented services to communicated with the Slack API and built interactive messages directly from our application. We created a fully functional system that enables slagora to determine which action the user has taken within slack and take appropriate actions. Some of which are create election, request for help, view election details, vote, request election results, delete election etc. 
 
-We created results endpoints to serve the results for finished elections or elections that have support for real-time results. Head over to [Slagora](https://slagora.herokuapp.com/) to install the application in your team and start creating elections. I discussed a lot with my mentor on each step that was to be taken and he has always helped me with valuable guidance on what is needed.Though Slagora supports various features I can't really say it is production ready since we have to test it with real users and observe how it responds and we have in our roadmap a feature that will enable users communicate directly with Slagora Bot.
+We created results endpoints to serve the results for finished elections or elections that have support for real-time results. Head over to [Slagora](https://slagora.com/) to install the application in your team and start creating elections. I discussed a lot with my mentor on each step that was to be taken and he has always helped me with valuable guidance on what is needed.Though Slagora supports various features I can't really say it is production ready since we have to test it with real users and observe how it responds and we have in our roadmap a feature that will enable users communicate directly with Slagora Bot.
 
 We structured the project to ease future development. Created models, view and controllers to ease application development. This will ease the work of new developers, I was greatly helped by mentor in coming up with a simple architecture for the application. 
 

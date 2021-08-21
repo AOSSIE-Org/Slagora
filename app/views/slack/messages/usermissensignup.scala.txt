@@ -33,7 +33,7 @@
               		},
               		"accessory": {
               			"type": "button",
-                          "url": "https://99d47a45c4ea.ngrok.io/authenticate/slack_user",
+                          "url": "https://slagora.com/authenticate/slack_user",
                           "action_id": "blabla:signup",
                           "style": "primary",
               			"text": {
