@@ -166,12 +166,12 @@ class ElectionController @Inject()(messagesApi: MessagesApi,
                 team <- teamService.get(SlackTeam.buildLoginInfo(data.team.id))
               } yield {
                 if (partialElection.isDefined && team.isDefined) {
-                  val maybeElection = Election.buildFromPartialElection(partialElection.get, data)
+                  val maybeElection = Election.buildFromSlack(partialElection.get, data)
                   logger.error(s"Election: $maybeElection Team: $team Payload: $data")
                   if(maybeElection.isDefined) {
                     Ok("")
                     electionService.save(maybeElection.get).flatMap{election =>
-                      slackAPIService.sendVoteInviteMsg(election, team.get, data).flatMap{ _ =>
+                      slackAPIService.sendVoteInviteMsg(election, team.get).flatMap{ _ =>
                         slackAPIService.sendCompletedElectionMsg(election, data.response_url, team.get)
                           .flatMap { _ =>
                             partialElectionService.delete(partialElection.get.id)

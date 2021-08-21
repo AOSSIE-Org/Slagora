@@ -2,9 +2,9 @@ package models
 
 import java.text.SimpleDateFormat
 import java.util.Date
-
 import play.api.libs.json._
 import com.mohiva.play.silhouette.api.LoginInfo
+import models.Election.isDatesValid
 import models.security.SlackUser
 import models.slack_api.payloads.SimpleActionPayload
 import org.joda.time.{DateTime, DateTimeZone, LocalDate}
@@ -213,7 +213,7 @@ object Election {
     }
   }
 
-  def buildFromPartialElection(partialElection: PartialElection, payload: SimpleActionPayload): Option[Election] = {
+  def buildFromSlack(partialElection: PartialElection, payload: SimpleActionPayload): Option[Election] = {
     if( isDatesValid(partialElection.start, partialElection.end) ) {
       val regex = "\\s++$"
       val candidatesList = for (candidate <- partialElection.candidates) yield {
@@ -249,6 +249,48 @@ object Election {
         isCounted = false,
         noVacancies = partialElection.noSeats,
         loginInfo = Some(SlackUser.buildLoginInfo(payload.user.id,payload.team.id))
+      ))
+    } else {
+      None
+    }
+  }
+
+  def buildFromAPI(partialElection: APIElectionData, loginInfo: LoginInfo): Option[Election] = {
+    if (isDatesValid(partialElection.start, partialElection.end)) {
+      val regex = "\\s++$"
+      val candidatesList = for (candidate <- partialElection.candidates) yield {
+        //Remove leading and trailing white spaces
+        candidate.replaceFirst(regex, "").reverse.replaceFirst(regex, "").reverse
+      }
+      val now = LocalDate.now(DateTimeZone.UTC)
+      //Set end time to end of the day
+      val endDate = DateTime.parse(s"${partialElection.end}T23:59:59Z")
+      var startDate = DateTime.now(DateTimeZone.UTC)
+      if (DateTime.parse(partialElection.start).isAfter(DateTime.parse(LocalDate.now().toString("yyyy-MM-dd")))) {
+        //Set start time to midnight
+        startDate = DateTime.parse(s"${partialElection.start}T00:00:00Z")
+      } else {
+        startDate = now.toDateTimeAtCurrentTime.toDateTime(DateTimeZone.UTC)
+      }
+      Some(Election(
+        None,
+        name = partialElection.name,
+        description = partialElection.description,
+        creatorName = partialElection.createdBy,
+        channelId = partialElection.channelID,
+        start = startDate,
+        end = endDate,
+        realtimeResult = partialElection.isRealtime,
+        votingAlgo = partialElection.algorithm,
+        candidates = candidatesList,
+        ballotVisibility = partialElection.ballotVisibility,
+        createdTime = now.toDateTimeAtCurrentTime.toDateTime(DateTimeZone.UTC),
+        ballot = List.empty[Ballot],
+        voterList = List.empty[Voter],
+        winners = List.empty[Winner],
+        isCounted = false,
+        noVacancies = partialElection.noSeats,
+        loginInfo = Some(loginInfo)
       ))
     } else {
       None

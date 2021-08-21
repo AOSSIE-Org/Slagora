@@ -10,7 +10,7 @@ import utils.auth.DefaultEnv
 
 import scala.concurrent.Future
 
-@Api(value = "Example data")
+@Api(value = "Slack")
 @Singleton
 class ApplicationController @Inject()(components: ControllerComponents,
                                       silhouette: Silhouette[DefaultEnv]) extends AbstractController(components) {
@@ -32,15 +32,5 @@ class ApplicationController @Inject()(components: ControllerComponents,
       url = "/assets/lib/swagger-ui/index.html",
       queryString = Map("url" -> Seq("http://" + request.host + "/swagger.json"))
     )
-  }
-
-  @ApiOperation(value = "Get bad password value")
-  def badPassword = silhouette.SecuredAction.async { implicit request =>
-    Future.successful(Ok(Json.obj("result" -> "qwerty1234")))
-  }
-
-  @ApiOperation(value = "Get colors")
-  def colors = Action.async {
-    Future.successful(Ok(Json.arr("black", "blue", "green", "red", "white")))
   }
 }

@@ -7,6 +7,7 @@ import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.{Clock, Credentials, ExtractableRequest, PasswordHasherRegistry}
 import com.mohiva.play.silhouette.impl.providers._
 import com.mohiva.play.silhouette.impl.providers.oauth2.FacebookProvider
+import formatters.json.Token
 import io.swagger.annotations.{Api, ApiImplicitParam, ApiImplicitParams, ApiOperation}
 import models.security.{SlackTeamBuilder, SlackUser, SlackUserBuilder}
 import play.api.Configuration
@@ -65,9 +66,49 @@ class CredentialsAuthController @Inject()(components: ControllerComponents,
         p.buildProfileFromAccessCode(code).flatMap{
           profile =>
             userService.get(profile.loginInfo).flatMap{
-              case Some(_) => Future.successful(Conflict("User already exists"))
+              case Some(user) => silhouette.env.authenticatorService
+                .create(profile.loginInfo)
+                .map {
+                  case authenticator => authenticator
+                }
+                .flatMap { authenticator =>
+                  silhouette.env.eventBus.publish(LoginEvent(user, request))
+                  silhouette.env.authenticatorService
+                    .init(authenticator)
+                    .flatMap { token =>
+                      silhouette.env.authenticatorService
+                        .embed(
+                          token,
+                          Ok(
+                            Json.toJson(Json.obj("user" -> user, "token" -> Token(
+                              token,
+                              authenticator.expirationDateTime)))))
+                    }
+                }
               case _ => userService.save(profile)
-                .flatMap(_ => Future.successful(Ok(views.html.signin())))
+                .flatMap{
+                  case true =>
+                    silhouette.env.authenticatorService
+                      .create(profile.loginInfo)
+                      .map {
+                        case authenticator => authenticator
+                      }
+                      .flatMap { authenticator =>
+                        silhouette.env.eventBus.publish(LoginEvent(profile, request))
+                        silhouette.env.authenticatorService
+                          .init(authenticator)
+                          .flatMap { token =>
+                            silhouette.env.authenticatorService
+                              .embed(
+                                token,
+                                Ok(
+                                  Json.toJson(Json.obj("user" -> profile, "token" -> Token(
+                                    token,
+                                    authenticator.expirationDateTime)))))
+                          }
+                      }
+                  case _ =>  Future.successful(InternalServerError("Server Error"))
+                }
             }
         }
     }).recover {

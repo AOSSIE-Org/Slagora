@@ -61,12 +61,12 @@ class SlackAPIProvider @Inject()(
       }
   }
 
-  override def sendVoteInviteMsg(election: Election, team: SlackTeam, simpleActionPayload: SimpleActionPayload): Future[JsValue] = {
+  override def sendVoteInviteMsg(election: Election, team: SlackTeam): Future[JsValue] = {
     val http = httpLayer.url(slackAPISettings.baseUrl.concat(slackAPISettings.sendMsg))
       .addHttpHeaders(
         "Content-type" -> "application/json",
         "Authorization" -> s"Bearer ${team.bot.bot_access_token}")
-    http.post(Json.parse(views.txt.slack.messages.callforvote(election.id.get, election.name, election.start, election.end, election.votingAlgo, election.description, s"@${simpleActionPayload.user.name}", simpleActionPayload.channel.id).body))
+    http.post(Json.parse(views.txt.slack.messages.callforvote(election.id.get, election.name, election.start, election.end, election.votingAlgo, election.description, s"@${election.creatorName}", election.channelId).body))
       .flatMap { response =>
         Future.successful(response.json)
       }
