@@ -1,98 +1,81 @@
-# Slagora
+# ngx-admin [<img src="https://i.imgur.com/oMcxwZ0.png" alt="Eva Design System" height="20px" />](https://eva.design) [![Build Status](https://travis-ci.org/akveo/ngx-admin.svg?branch=master)](https://travis-ci.org/akveo/ngx-admin) [![Dependency Status](https://david-dm.org/akveo/ngx-admin/status.svg)](https://david-dm.org/akveo/ng2-admin)
 
-## Readme
+[Who uses ngx-admin?](https://github.com/akveo/ngx-admin/issues/1645)| [Documentation](https://akveo.github.io/ngx-admin/?utm_source=github&utm_medium=ngx_admin_readme&utm_campaign=themes) | [Installation Guidelines](https://akveo.github.io/ngx-admin/docs/getting-started/what-is-ngxadmin?utm_source=github&utm_medium=ngx_admin_readme&utm_campaign=themes)
 
-_Slack Application (Slagora) that uses [Agora](https://gitlab.com/aossie/Agora/): An Electronic Voting Library implemented in Scala_
+# Admin template based on Angular 9+ and <a href="https://github.com/akveo/nebular">Nebular</a>
+<a target="_blank" href="http://akveo.com/ngx-admin/pages/dashboard?theme=corporate&utm_source=github&utm_medium=ngx_admin_readme&utm_campaign=main_pic"><img src="https://i.imgur.com/mFdqvgG.png"/></a>
 
+### Backend Integration Bundles
+Easy way to integrate ngx-admin with backend (.NET, Node.js, Java etc.).
 
-This project is created using the play framework 2.6 seeds [template](https://github.com/playframework/play-scala-seed.g8).
+<a target="_blank" href="https://hubs.ly/H0n4ZxC0">
+  <img src="https://i.imgur.com/Ywbs8cl.png"/>
+</a>
 
+[Checkout our Store](https://hubs.ly/H0qwC2Q0) for ready to use Backend Bundles.
 
-![build status](https://gitlab.com/aossie/Agora-Web/badges/master/build.svg)
-
-| Scala | Play | Updated
-| :-: | :-: | :-:
-| <img src="https://raw.githubusercontent.com/OlegIlyenko/scala-icon/master/scala-icon.png " width="25"> | <img src="https://raw.githubusercontent.com/OlegIlyenko/scala-icon/master/play-icon.png " width="25"> | August 08, 2018
-
-To run the development environment for this REST API, you need [Git](https://git-scm.com/), [Sbt](http://www.scala-sbt.org/) and [MongoDB](https://www.mongodb.com/) installed.
-
-## Table of contents
-
-- [Slagora](#slagora)
-  - [Readme](#readme)
-  - [Table of contents](#table-of-contents)
-    - [Installation](#installation)
-    - [Running the application](#running-the-application)
-    - [Application](#application)
-    - [Deployment](#deployment)
-    - [Troubleshooting your local environment](#troubleshooting-your-local-environment)
-  - [Further Reading / Useful Links](#further-reading--useful-links)
+### With 6 stunning visual themes
 
 
-### Installation
+#### Material Dark
+<a target="_blank" href="https://hubs.ly/H0nxM3b0"><img src="https://i.imgur.com/csP0aZ9.png"/></a>
 
-To install the backend, please do the following:
+#### Material Light
+<a target="_blank" href="https://hubs.ly/H0nxNmv0"><img src="https://i.imgur.com/J5Rmgn4.png"/></a>
 
-1. Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
-2. Clone this repo with `https://gitlab.com/aossie/slagora`
-  - **Note:** *If you just want to use the project, cloning is the best option. However, if you wish to contribute to the project, you will need to fork the project first, and then clone your `Slagora` fork and make your contributions via a branch on your fork.*
-3. Install and run [MongoDB](https://www.mongodb.com/)
-4. Configure [Silhouette](https://www.silhouette.rocks/) to allow Slagora to do Oauth2 authentication:
-    1. Make a copy of `silhouette.conf` and rename it to `silhouetteLocal.conf`.
-    2. Create new applications in [Slack](https://api.slack.com/)
-    3. Download [Ngrok](https://ngrok.com/) and run `ngrok http 9000` copy the link (secured one example https://25ecd5c1.ngrok.io) and save for later use
-    4. Fill the following fields in `silhouetteLocal.conf` with the ids, keys and secrets from your created applications.
+#### Default
+<a target="_blank" href="https://hubs.ly/H0n4Tgv0"><img src="https://i.imgur.com/Kn3xDKQ.png"/></a>
 
-        ```
-          # Slack user provider
-                slack_team.clientID = "Your Slack Client ID"
-                slack_team.clientSecret = "Your Slack Client Secret"
-                slack_user.authorizationURL = "https://slack.com/oauth/authorize"
-                slack_user.accessTokenURL = "https://slack.com/api/oauth.access"
-                slack_user.redirectURL = "(your ngrok link you obtained in step 4)/authenticate-user"
-                slack_user.apiURL = "https://slack.com/api/users.identity"
-                slack_user.scope = "chat:write:bot chat:write:user identity.basic identity.email identity.team identity.avatar"
+#### Dark
+<a target="_blank" href="https://hubs.ly/H0n4Th20"><img src="https://i.imgur.com/FAn5iXY.png"/></a>
 
-            # Slack team provider
-                slack_team.clientID = "Your Slack Client ID"
-                slack_team.clientSecret = "Your Slack Client Secret"
-                slack_team.authorizationURL = "https://slack.com/oauth/authorize"
-                slack_team.accessTokenURL = "https://slack.com/api/oauth.access"
-                slack_team.redirectURL = "(your ngrok link you obtained in step 4)/authenticate-user"
-                slack_team.scope = "incoming-webhook commands bot"
-        ```
-    5. Delete the line `include "silhouetteLocal.conf"` from `silhouetteLocal.conf`.
+#### Cosmic
+<a target="_blank" href="https://hubs.ly/H0n4Tj80"><img src="https://i.imgur.com/iJu2YDF.png"/></a>
 
-5. As above, make a copy of `application.conf` and rename it to `applicationLocal.conf`. 
-    1. Assign your MongoDB URI (e.g. `mongodb://localhost`, if you are connecting to a MongoDB server running in your local computer) to the `mongodb.default.uri` field (e.g `mongodb.default.uri = "mongodb://localhost"`)
-    2. Delete the lines `include "silhouette.conf"` and `include "applicationLocal"` from `applicationLocal.conf`.
+#### Corporate
+<a target="_blank" href="https://hubs.ly/H0n4TDQ0"><img src="https://i.imgur.com/GpUt6NW.png"/></a>
 
-### Running the application
+### What's included:
 
-To start the API, please do the following:
+- Angular 9+ & Typescript
+- Bootstrap 4+ & SCSS
+- Responsive layout
+- RTL support
+- High resolution
+- Flexibly configurable themes with **hot-reload** (3 themes included)
+- Authentication module with multiple providers
+- 40+ Angular Components
+- 60+ Usage Examples
 
-- Make sure you have java 8 installed and not java 9. For some reasons the build fails with java 9
-- Start the server by running `sbt run` in the root folder.
-- Go to [http://localhost:9000/](http://localhost:9000/) in a browser. Where you will see the API documentation hosted using swagger UI.
-    - **Note:** *Changing any source code while the server is running will automatically recompile and reload the application on the next HTTP request.*
+### Demo
 
-### Application
+<a target="_blank" href="http://akveo.com/ngx-admin/">Live Demo</a>
 
-The application will be served: [Slagora](http://localhost:9000/) or using the link generated by Ngrock
+## Documentation
+This template is using [Nebular](https://github.com/akveo/nebular) modules set, [here you can find documentation and other useful articles](https://akveo.github.io/nebular/docs/guides/install-based-on-starter-kit).
 
-### Deployment 
-The current development branch is deployed on Heroku and is available at https://slagora.herokuapp.com
+### Empty starter kit
+Don't need all the pages and modules and just looking for an empty starter kit for your next project? Check out our [starter-kit branch](https://github.com/akveo/ngx-admin/tree/starter-kit).
 
-### Troubleshooting your local environment
+## BrowserStack
+This project runs its tests on multiple desktop and mobile browsers using [BrowserStack](http://www.browserstack.com).
 
-Always `git pull` and get the latest from master. [Google](https://www.google.com) and [Stackoverflow](https://stackoverflow.com/) are your friends. You can find answers for most technical problems there. If you run into problems you can't resolve, feel free to open an issue.
+<img src="https://cloud.githubusercontent.com/assets/131406/22254249/534d889e-e254-11e6-8427-a759fb23b7bd.png" height="40" />
 
-## Further Reading / Useful Links
+## More from Akveo
 
-* [sbt](http://www.scala-sbt.org/)
-* [Play framework](https://www.playframework.com/)
-* [Slack API](https://api.slack.com)
-* [Scala](https://www.scala-lang.org/)
-* [Silhouette Documentation](https://www.silhouette.rocks/docs)
-* [Play2-ReactiveMongoDB](http://reactivemongo.org/releases/0.1x/documentation/tutorial/play.html)
-* [Swagger-play](https://github.com/swagger-api/swagger-play)
+- [Eva Icons](https://github.com/akveo/eva-icons) - 480+ beautiful Open Source icons
+- [Nebular](https://github.com/akveo/nebular) - Angular Components, Auth and Security
+
+### How can I support developers?
+- Star our GitHub repo :star:
+- Create pull requests, submit bugs, suggest new features or documentation updates :wrench:
+- Follow us on [Twitter](https://twitter.com/akveo_inc) :feet:
+- Like our page on [Facebook](https://www.facebook.com/akveo/) :thumbsup:
+
+### Looking for engineering services? 
+Visit [our homepage](http://akveo.com/) or simply leave us a message to [contact@akveo.com](mailto:contact@akveo.com). We will be happy to work with you!
+
+### From Developers
+Made with :heart: by [Akveo team](http://akveo.com/). Follow us on [Twitter](https://twitter.com/akveo_inc) to get the latest news first!
+We're always happy to receive your feedback!
